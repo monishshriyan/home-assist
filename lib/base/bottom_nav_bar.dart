@@ -20,7 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         title: const Center(child: Text("HomeAssist")),
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
+        margin: const EdgeInsets.only(bottom: 25, left: 80, right: 80),
         /* color: const Color.fromARGB(255, 13, 13, 13) */
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 13, 13, 13),
@@ -36,26 +36,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ), // Add this),
 
         child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: GNav(
               backgroundColor: Color.fromARGB(255, 13, 13, 13),
               color: Color.fromARGB(246, 255, 255, 255),
               activeColor: Color.fromARGB(243, 255, 255, 255),
-              tabBackgroundColor: Color.fromARGB(47, 18, 234, 65),
-              gap: 4,
+              tabBackgroundColor: Color.fromARGB(80, 0, 255, 64),
+              gap: 6,
               duration: Duration(milliseconds: 200),
               iconSize: 28,
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.all(5),
               haptic: true,
               curve: Curves.easeInExpo,
               tabs: [
                 GButton(
-                  icon: FluentSystemIcons.ic_fluent_home_regular,
+                  icon: FluentSystemIcons.ic_fluent_home_filled,
                   text: 'Home',
                 ),
-                GButton(
-                    icon: FluentSystemIcons.ic_fluent_search_regular,
-                    text: 'Search'),
                 GButton(
                     icon: FluentSystemIcons.ic_fluent_person_regular,
                     text: 'Account'),
