@@ -13,6 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'HomeAssist',
         theme: ThemeData(useMaterial3: true),
-        home: const BottomNavBar());
+        home: const MaterialNav());
   }
 }
