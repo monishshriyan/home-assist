@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homeassist/base/account_screen.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/settings_screen.dart';
+import 'package:homeassist/base/constants.dart';
 
 class MaterialNav extends StatefulWidget {
   const MaterialNav({super.key});
@@ -24,7 +25,7 @@ class _MaterialNavState extends State<MaterialNav> {
         body: screens[index],
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
-            indicatorColor: Colors.blue.shade100,
+            indicatorColor: colorConstants.navLabelHighlight,
             labelTextStyle: WidgetStateProperty.all(
               const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
@@ -39,7 +40,7 @@ class _MaterialNavState extends State<MaterialNav> {
               height: 70,
               labelBehavior:
                   NavigationDestinationLabelBehavior.onlyShowSelected,
-              backgroundColor: Color.fromARGB(65, 106, 170, 230),
+              backgroundColor: colorConstants.navBackground,
               onDestinationSelected: (index) => setState(() {
                 this.index = index;
               }),
