@@ -60,7 +60,7 @@ class _MaterialNavState extends State<MaterialNav> {
                     label: 'Discover'),
                 NavigationDestination(
                     icon: Icon(
-                      Icons.calendar_month,
+                      Icons.calendar_month_outlined,
                       size: 30,
                     ),
                     selectedIcon: Icon(
