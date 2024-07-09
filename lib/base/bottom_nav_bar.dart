@@ -57,6 +57,16 @@ class _MaterialNavState extends State<MaterialNav> {
                     label: 'Discover'),
                 NavigationDestination(
                     icon: Icon(
+                      Icons.calendar_month,
+                      size: 30,
+                    ),
+                    selectedIcon: Icon(
+                      Icons.explore,
+                      size: 30,
+                    ),
+                    label: 'Bookings'),
+                NavigationDestination(
+                    icon: Icon(
                       Icons.person_outlined,
                       size: 30,
                     ),
@@ -65,7 +75,14 @@ class _MaterialNavState extends State<MaterialNav> {
                 NavigationDestination(
                     icon: Icon(Icons.settings_outlined, size: 30),
                     selectedIcon: Icon(Icons.settings, size: 30),
-                    label: 'Settings')
+                    label: 'Settings'),
+                 NavigationDestination(
+                    icon: Icon(
+                      Icons.person_outlined,
+                      size: 30,
+                    ),
+                    selectedIcon: Icon(Icons.person, size: 30),
+                    label: 'Account'),
               ],
             ),
           ),
