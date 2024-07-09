@@ -25,7 +25,7 @@ class _MaterialNavState extends State<MaterialNav> {
         body: screens[index],
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
-            indicatorColor: colorConstants.navLabelHighlight,
+            indicatorColor: ColorConstants.navLabelHighlight,
             labelTextStyle: WidgetStateProperty.all(
               const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
@@ -40,7 +40,7 @@ class _MaterialNavState extends State<MaterialNav> {
               height: 70,
               labelBehavior:
                   NavigationDestinationLabelBehavior.onlyShowSelected,
-              backgroundColor: colorConstants.navBackground,
+              backgroundColor: ColorConstants.navBackground,
               onDestinationSelected: (index) => setState(() {
                 this.index = index;
               }),

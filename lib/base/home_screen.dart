@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:homeassist/base/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,66 +29,99 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: Column(children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //name
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hello Broda!",
-                    style: TextStyle(
-                        /* fontFamily: , */
-                        color: colorConstants.textDarkGreen,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${DateTime.now().day} ${months[DateTime.now().month]} ${DateTime.now().year}",
-                    style: TextStyle(color: colorConstants.darkSlateGrey),
-                  ),
-                ],
-              ),
+      backgroundColor: ColorConstants.backgroundWhite,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //name
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hello Broda!",
+                      style: TextStyle(
+                          /* fontFamily: , */
+                          color: ColorConstants.textDarkGreen,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "${DateTime.now().day} ${months[DateTime.now().month]} ${DateTime.now().year}",
+                      style: TextStyle(color: ColorConstants.darkSlateGrey),
+                    ),
+                  ],
+                ),
 
-              Container(
-                padding: const EdgeInsets.all(10),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: ColorConstants.navLabelHighlight,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Icon(
+                    Icons.notifications,
+                    color: ColorConstants.textDarkGreen,
+                    size: 26,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            //search bar
+            Container(
                 decoration: BoxDecoration(
-                  color: colorConstants.navLabelHighlight,
-                  borderRadius: BorderRadius.circular(30),
+                  color: ColorConstants.navBackground,
+                  borderRadius: BorderRadius.circular(50),
+                  /* border: Border.all(
+                        width: 0.5, color: ColorConstants.darkSlateGrey) */
                 ),
-                child: Icon(
-                  Icons.notifications,
-                  color: colorConstants.textDarkGreen,
-                  size: 26,
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                      /* mainAxisAlignment: MainAxisAlignment.spaceBetween, */
+                      children: [
+                        const Icon(Icons.search),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Find Services",
+                          style: GoogleFonts.getFont(FontConstants.fontBody,
+                              textStyle: TextStyle(
+                                  color: ColorConstants.textDarkGreen)),
+                        )
+                      ]),
+                )),
+            //cards
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(
+                    "POPULAR AROUND YOU",
+                    style: TextStyle(
+                        /* fontFamily: 'Nikkei', */
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[600]),
+                  ),
                 ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          //search bar
-          Container(
-              decoration: BoxDecoration(
-                color: colorConstants.navBackground,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              padding: const EdgeInsets.all(15),
-              child: Container(
-                padding: EdgeInsets.only(left: 15, right: 15),
-                child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text("Find Services"), Icon(Icons.search)]),
-              ))
-        ]),
+              ],
+            ),
+            //cards
+            Container()
+          ]),
+        ),
       ),
     );
   }
