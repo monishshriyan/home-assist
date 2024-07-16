@@ -20,7 +20,6 @@ class _MaterialNavState extends State<MaterialNav> {
     const BookingsScreen(),
     const AccountScreen(),
     const SettingsScreen(),
-    
   ];
   @override
   Widget build(BuildContext context) {
@@ -69,17 +68,9 @@ class _MaterialNavState extends State<MaterialNav> {
                     ),
                     label: 'Bookings'),
                 NavigationDestination(
-                    icon: Icon(
-                      Icons.person_outlined,
-                      size: 30,
-                    ),
-                    selectedIcon: Icon(Icons.person, size: 30),
-                    label: 'Account'),
-                NavigationDestination(
                     icon: Icon(Icons.settings_outlined, size: 30),
                     selectedIcon: Icon(Icons.settings, size: 30),
                     label: 'Settings'),
-                 
               ],
             ),
           ),
