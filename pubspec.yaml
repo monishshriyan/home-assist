@@ -39,6 +39,11 @@ dependencies:
   hexcolor: ^3.0.1
   google_fonts: ^6.2.1
 
+  # The following adds a carousel slider
+  carousel_slider: ^4.2.1
+  # The following adds a dot indicator
+  dots_indicator: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

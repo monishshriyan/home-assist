@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +28,8 @@ List<String> months = [
 ];
 
 class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +123,52 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             //cards
-            Container()
+            Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: CarouselSlider(
+                items: [1,2,3,4,5].map((i) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  //margin: EdgeInsets.symmetric(horizontal: ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[100],borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Center(
+                    child: Text(
+                      "text $i",
+                      style: TextStyle(fontSize: 40),
+                      )
+                      ),
+                );
+              }).toList(),
+              options: CarouselOptions(
+                height: 170,
+                enlargeCenterPage: true,
+                enlargeFactor: 0.2,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentIndex = index;
+                });
+                },
+                ),
+              ),
+            ),
+            //dot indicator
+            Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: DotsIndicator(
+              dotsCount: 5,
+              position: currentIndex.toInt(),
+              decorator: DotsDecorator(
+                size: const Size.square(7),
+                activeSize: const Size(14.0, 7.0),
+                color: Color.fromARGB(255, 200, 200, 201),
+                activeColor: Color.fromARGB(255, 55, 154, 235),
+                activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))
+              ),
+              ),
+            )
+            
           ]),
         ),
       ),
