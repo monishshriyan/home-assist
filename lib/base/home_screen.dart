@@ -4,6 +4,7 @@ import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +28,13 @@ List<String> months = [
   "Dec",
 ];
 
+final List<String> carouselImages = [
+  'images/HomeCleaningCard1.png',
+  'images/techSupportCard2.png',
+  'images/HomeCleaningCard1.png',
+  'images/HomeCleaningCard1.png',
+];
+
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
@@ -36,49 +44,55 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: ColorConstants.backgroundWhite,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //name
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hello Broda!",
-                      style: TextStyle(
-                          /* fontFamily: , */
-                          color: ColorConstants.textDarkGreen,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "${DateTime.now().day} ${months[DateTime.now().month]} ${DateTime.now().year}",
-                      style: TextStyle(color: ColorConstants.darkSlateGrey),
-                    ),
-                  ],
-                ),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                  horizontal: ValueConstants.containerMargin),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //name
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello Broda!",
+                        style: TextStyle(
+                            /* fontFamily: , */
+                            color: ColorConstants.textDarkGreen,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "${DateTime.now().day} ${months[DateTime.now().month - 1]} ${DateTime.now().year}",
+                        style: TextStyle(color: ColorConstants.darkSlateGrey),
+                      ),
+                    ],
+                  ),
 
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: ColorConstants.navLabelHighlight,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(
-                    Icons.notifications,
-                    color: ColorConstants.textDarkGreen,
-                    size: 26,
-                  ),
-                )
-              ],
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.navLabelHighlight,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Icon(
+                      Icons.notifications,
+                      color: ColorConstants.textDarkGreen,
+                      size: 26,
+                    ),
+                  )
+                ],
+              ),
             ),
             const SizedBox(
               height: 20,
             ),
             //search bar
             Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: ValueConstants.containerMargin),
                 decoration: BoxDecoration(
                   color: ColorConstants.navBackground,
                   borderRadius: BorderRadius.circular(50),
@@ -103,72 +117,76 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ]),
                 )),
-            //cards
             const SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    "POPULAR AROUND YOU",
-                    style: TextStyle(
-                        /* fontFamily: 'Nikkei', */
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[600]),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                  horizontal: ValueConstants.containerMargin),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "POPULAR AROUND YOU",
+                      style: TextStyle(
+                          /* fontFamily: 'Nikkei', */
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey[600]),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             //cards
             Container(
               padding: const EdgeInsets.only(top: 10),
               child: CarouselSlider(
-                items: [1,2,3,4,5].map((i) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  //margin: EdgeInsets.symmetric(horizontal: ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[100],borderRadius: BorderRadius.circular(30)
-                  ),
-                  child: Center(
-                    child: Text(
-                      "text $i",
-                      style: TextStyle(fontSize: 40),
-                      )
-                      ),
-                );
-              }).toList(),
-              options: CarouselOptions(
-                height: 170,
-                enlargeCenterPage: true,
-                enlargeFactor: 0.2,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentIndex = index;
-                });
-                },
+                items: carouselImages
+                    .map((e) => Center(
+                          child: Image.asset(
+                            e,
+/*                             fit: BoxFit.cover,
+ */
+                            width: 1000,
+                          ),
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                  viewportFraction: 0.8,
+                  autoPlay: true,
+                  enableInfiniteScroll: true,
+                  height: 170,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.2,
+                  autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+                  autoPlayInterval: const Duration(seconds: 4),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                    print('Current Index: $currentIndex');
+                  },
                 ),
               ),
             ),
             //dot indicator
             Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: DotsIndicator(
-              dotsCount: 5,
-              position: currentIndex.toInt(),
-              decorator: DotsDecorator(
-                size: const Size.square(7),
-                activeSize: const Size(14.0, 7.0),
-                color: Color.fromARGB(255, 200, 200, 201),
-                activeColor: Color.fromARGB(255, 55, 154, 235),
-                activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))
-              ),
+              padding: const EdgeInsets.only(top: 5),
+              child: AnimatedSmoothIndicator(
+                activeIndex: currentIndex,
+                count: 4,
+                effect: ScaleEffect(
+                  activeDotColor: ColorConstants.textDarkGreen,
+                  dotHeight: 5,
+                  dotWidth: 15,
+/*                   dotColor: const Color.fromARGB(155, 175, 175, 175),
+ */
+                ),
               ),
             )
-            
           ]),
         ),
       ),

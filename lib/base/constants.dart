@@ -21,3 +21,8 @@ class FontConstants {
   //font
   static const String fontBody = 'Inter';
 }
+
+class ValueConstants {
+  //container margin
+  static const double containerMargin = 15.0;
+}
