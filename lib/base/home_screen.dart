@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -157,15 +155,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       .toList(),
                   options: CarouselOptions(
                     viewportFraction: 0.8,
-                    autoPlay: false,
+                    autoPlay: true,
                     enableInfiniteScroll: true,
                     height: 170,
                     enlargeCenterPage: true,
                     enlargeFactor: 0.2,
                     autoPlayAnimationDuration:
                         const Duration(milliseconds: 1000),
-                    autoPlayInterval: const Duration(seconds: 4),
-                    autoPlayCurve: Curves.fastOutSlowIn,
+                    autoPlayInterval: const Duration(seconds: 5),
+/*                     autoPlayCurve: Curves.fastOutSlowIn, */
                     onPageChanged: (index, reason) {
                       setState(() {
                         currentIndex = index;
@@ -280,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     //card 2
                     Container(
                       width: 140,
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      margin: const EdgeInsets.only(right: 5),
                       color: ColorConstants.backgroundWhite,
                       child: Column(children: [
                         ClipRRect(
@@ -332,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ,
                     Container(
                       width: 140,
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      margin: const EdgeInsets.only(left: 5),
                       color: ColorConstants.backgroundWhite,
                       child: Column(children: [
                         ClipRRect(

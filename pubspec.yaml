@@ -34,7 +34,6 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  flutter_svg: ^2.0.10+1
   fluentui_icons: ^1.0.0
   hexcolor: ^3.0.1
   google_fonts: ^6.2.1
@@ -42,7 +41,6 @@ dependencies:
   # The following adds a carousel slider
   carousel_slider: ^4.2.1
   # The following adds a dot indicator
-  dots_indicator: ^3.0.0
   smooth_page_indicator: ^1.2.0
 
 dev_dependencies:
