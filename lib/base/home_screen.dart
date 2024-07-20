@@ -51,22 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     //name
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Hello Broda!",
-                          style: TextStyle(
-                              /* fontFamily: , */
-                              color: ColorConstants.textDarkGreen,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900),
-                        ),
-                        Text(
-                          "${DateTime.now().day} ${months[DateTime.now().month - 1]} ${DateTime.now().year}",
-                          style: TextStyle(color: ColorConstants.darkSlateGrey),
-                        ),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.only(top: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello Broda!",
+                            style: TextStyle(
+                                /* fontFamily: , */
+                                color: ColorConstants.textDarkGreen,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900),
+                          ),
+                          Text(
+                            "${DateTime.now().day} ${months[DateTime.now().month - 1]} ${DateTime.now().year}",
+                            style:
+                                TextStyle(color: ColorConstants.darkSlateGrey),
+                          ),
+                        ],
+                      ),
                     ),
 
                     Container(
@@ -161,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     enlargeCenterPage: true,
                     enlargeFactor: 0.2,
                     autoPlayAnimationDuration:
-                        const Duration(milliseconds: 1000),
+                        const Duration(milliseconds: 300),
                     autoPlayInterval: const Duration(seconds: 5),
 /*                     autoPlayCurve: Curves.fastOutSlowIn, */
                     onPageChanged: (index, reason) {
@@ -189,8 +193,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
 
-              //services card rows
-              //Electrician, Plumbers, Carpenters
+              //services card rows1
+              //New Services
               ,
               const SizedBox(height: 20),
               Container(
@@ -379,6 +383,203 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   ],
                 ),
+              ),
+
+              //service card rows 2
+
+              Container(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: ValueConstants.containerMargin),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          children: [
+                            Text(
+                              "New Services",
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w800),
+                            )
+                          ],
+                        ),
+                        Text("See all >",
+                            style: TextStyle(
+                                color: ColorConstants.deepGreenAccent,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500))
+                      ])),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: ValueConstants.containerMargin),
+                height: 250,
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: [
+                    //card 1
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      width: 140,
+                      color: ColorConstants.backgroundWhite,
+                      child: Column(children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              "images/bathroom-clean.webp",
+                              fit: BoxFit.cover,
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              child: const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Bathroom Cleaning",
+                                    style: headerServiceCardTextStyle,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Color.fromARGB(155, 22, 22, 22),
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        "4.5",
+                                        style: subServiceCardTextStyle,
+                                      ),
+                                      Text(
+                                        "(53k)",
+                                        style: subServiceCardTextStyle,
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text("₹186", style: priceServiceCardTextStyle)
+                                ],
+                              )),
+                        )
+                      ]),
+                    ),
+
+                    //card 2
+                    Container(
+                      width: 140,
+                      margin: const EdgeInsets.only(right: 5),
+                      color: ColorConstants.backgroundWhite,
+                      child: Column(children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              "images/ac-repair.webp",
+                              fit: BoxFit.cover,
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              child: const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "AC Repair",
+                                    style: headerServiceCardTextStyle,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Color.fromARGB(155, 22, 22, 22),
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        "4.5",
+                                        style: subServiceCardTextStyle,
+                                      ),
+                                      Text(
+                                        "(53k)",
+                                        style: subServiceCardTextStyle,
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text("₹162", style: priceServiceCardTextStyle)
+                                ],
+                              )),
+                        )
+                      ]),
+                    )
+
+                    //card 3
+                    ,
+                    Container(
+                      width: 140,
+                      margin: const EdgeInsets.only(left: 5),
+                      color: ColorConstants.backgroundWhite,
+                      child: Column(children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              "images/sofa-cleaning.webp",
+                              fit: BoxFit.cover,
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              child: const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Sofa Cleaning",
+                                    style: headerServiceCardTextStyle,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Color.fromARGB(155, 22, 22, 22),
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        "4.5",
+                                        style: subServiceCardTextStyle,
+                                      ),
+                                      Text(
+                                        "(53k)",
+                                        style: subServiceCardTextStyle,
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text("₹250", style: priceServiceCardTextStyle)
+                                ],
+                              )),
+                        )
+                      ]),
+                    )
+                  ],
+                ),
+              )
+
+              //referral card
+              ,
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 25),
+                child: Image.asset('images/referralCard.png'),
               )
             ]),
           ),
