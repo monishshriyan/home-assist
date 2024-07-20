@@ -30,14 +30,14 @@ class ValueConstants {
 //service card textStyles
 
 const TextStyle headerServiceCardTextStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 14,
     color: Color.fromARGB(255, 0, 0, 0),
     fontWeight: FontWeight.w700);
 
 const TextStyle subServiceCardTextStyle =
-    TextStyle(fontSize: 16, color: Color.fromARGB(155, 22, 22, 22));
+    TextStyle(fontSize: 14, color: Color.fromARGB(155, 22, 22, 22));
 
 const TextStyle priceServiceCardTextStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 14,
     color: Color.fromARGB(255, 0, 0, 0),
     fontWeight: FontWeight.w500);

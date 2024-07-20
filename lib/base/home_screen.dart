@@ -31,8 +31,7 @@ List<String> months = [
 final List<String> carouselImages = [
   'images/HomeCleaningCard1.png',
   'images/techSupportCard2.png',
-  'images/HomeCleaningCard1.png',
-  'images/HomeCleaningCard1.png',
+  'images/petGroomingCard3.png',
 ];
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             /* fontFamily: , */
                             color: ColorConstants.textDarkGreen,
                             fontSize: 24,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w900),
                       ),
                       Text(
                         "${DateTime.now().day} ${months[DateTime.now().month - 1]} ${DateTime.now().year}",
@@ -161,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   enableInfiniteScroll: true,
                   height: 170,
                   enlargeCenterPage: true,
-                  enlargeFactor: 0.2,
+                  enlargeFactor: 0.1,
                   autoPlayAnimationDuration: const Duration(milliseconds: 1000),
                   autoPlayInterval: const Duration(seconds: 4),
                   autoPlayCurve: Curves.fastOutSlowIn,
@@ -179,11 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.only(top: 5),
               child: AnimatedSmoothIndicator(
                 activeIndex: currentIndex,
-                count: 4,
+                count: 3,
                 effect: ScaleEffect(
                   activeDotColor: ColorConstants.textDarkGreen,
-                  dotHeight: 5,
-                  dotWidth: 15,
+                  dotHeight: 3,
+                  dotWidth: 10,
 /*                   dotColor: const Color.fromARGB(155, 175, 175, 175),
  */
                 ),
@@ -194,7 +193,31 @@ class _HomeScreenState extends State<HomeScreen> {
             //Electrician, Plumbers, Carpenters
             ,
             const SizedBox(height: 20),
-            SizedBox(
+            Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: ValueConstants.containerMargin),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        children: [
+                          Text(
+                            "New Services",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w800),
+                          )
+                        ],
+                      ),
+                      Text("See all >",
+                          style: TextStyle(
+                              color: ColorConstants.deepGreenAccent,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500))
+                    ])),
+            const SizedBox(height: 10),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                  horizontal: ValueConstants.containerMargin),
               height: 250,
               child: ListView(
                 physics: const BouncingScrollPhysics(),
@@ -203,8 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   //card 1
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: 160,
+                    margin: const EdgeInsets.only(right: 10),
+                    width: 140,
                     color: ColorConstants.backgroundWhite,
                     child: Column(children: [
                       ClipRRect(
@@ -214,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fit: BoxFit.cover,
                           )),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Container(
                             margin: const EdgeInsets.only(top: 10),
                             child: const Column(
@@ -254,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   //card 2
                   Container(
-                    width: 160,
+                    width: 140,
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     color: ColorConstants.backgroundWhite,
                     child: Column(children: [
@@ -265,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fit: BoxFit.cover,
                           )),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Container(
                             margin: const EdgeInsets.only(top: 10),
                             child: const Column(
@@ -306,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //card 3
                   ,
                   Container(
-                    width: 160,
+                    width: 140,
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     color: ColorConstants.backgroundWhite,
                     child: Column(children: [
@@ -317,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fit: BoxFit.cover,
                           )),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Container(
                             margin: const EdgeInsets.only(top: 10),
                             child: const Column(
