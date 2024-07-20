@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
+import 'package:homeassist/base/onboarding_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,6 @@ class MyApp extends StatelessWidget {
         title: 'HomeAssist',
         theme: ThemeData(
             useMaterial3: true, textTheme: GoogleFonts.interTightTextTheme()),
-        home: const MaterialNav());
+        home: const OnboardingScreen());
   }
 }
