@@ -72,6 +72,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/
+    - images/pfp.png
   fonts:
     - family: Nikkei
       fonts:
