@@ -578,7 +578,8 @@ class _HomeScreenState extends State<HomeScreen> {
               //referral card
               ,
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 25),
+                margin: const EdgeInsets.symmetric(
+                    vertical: 15, horizontal: ValueConstants.containerMargin),
                 child: Image.asset('images/referralCard.png'),
               )
             ]),
