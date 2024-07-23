@@ -8,6 +8,7 @@ class ColorConstants {
   static Color darkSlateGrey = HexColor('#475F5A');
   static Color deepGreenAccent = HexColor('#006972');
   static Color textWhite = HexColor('#F5F5F5');
+  static Color textLightGrey = HexColor('#808080');
 
   //background color
   static Color backgroundWhite = HexColor('#FFFFF');

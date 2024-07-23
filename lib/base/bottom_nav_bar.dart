@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:homeassist/base/account_screen.dart';
 import 'package:homeassist/base/bookings_screen.dart';
 import 'package:homeassist/base/home_screen.dart';
-import 'package:homeassist/base/settings_screen.dart';
 import 'package:homeassist/base/constants.dart';
 
 class MaterialNav extends StatefulWidget {
@@ -19,7 +18,6 @@ class _MaterialNavState extends State<MaterialNav> {
     const HomeScreen(),
     const BookingsScreen(),
     const AccountScreen(),
-    const SettingsScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -68,9 +66,9 @@ class _MaterialNavState extends State<MaterialNav> {
                     ),
                     label: 'Bookings'),
                 NavigationDestination(
-                    icon: Icon(Icons.settings_outlined, size: 30),
-                    selectedIcon: Icon(Icons.settings, size: 30),
-                    label: 'Settings'),
+                    icon: Icon(Icons.account_circle, size: 30),
+                    selectedIcon: Icon(Icons.account_circle, size: 30),
+                    label: 'Profile'),
               ],
             ),
           ),
