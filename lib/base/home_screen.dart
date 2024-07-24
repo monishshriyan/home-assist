@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
+import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -232,105 +234,129 @@ class _HomeScreenState extends State<HomeScreen> {
                   shrinkWrap: true,
                   children: [
                     //card 1
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      width: 140,
-                      color: ColorConstants.backgroundWhite,
-                      child: Column(children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              "images/bathroom-clean.webp",
-                              fit: BoxFit.cover,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Bathroom Cleaning",
-                                    style: headerServiceCardTextStyle,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Color.fromARGB(155, 22, 22, 22),
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        "4.5",
-                                        style: subServiceCardTextStyle,
-                                      ),
-                                      Text(
-                                        "(53k)",
-                                        style: subServiceCardTextStyle,
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text("₹186", style: priceServiceCardTextStyle)
-                                ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BathroomCleaningScreen()),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        width: 140,
+                        color: ColorConstants.backgroundWhite,
+                        child: Column(children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                "images/bathroom-clean.webp",
+                                fit: BoxFit.cover,
                               )),
-                        )
-                      ]),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Bathroom Cleaning",
+                                      style: headerServiceCardTextStyle,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "4.5",
+                                          style: subServiceCardTextStyle,
+                                        ),
+                                        Text(
+                                          "(53k)",
+                                          style: subServiceCardTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text("₹186",
+                                        style: priceServiceCardTextStyle)
+                                  ],
+                                )),
+                          )
+                        ]),
+                      ),
                     ),
 
                     //card 2
-                    Container(
-                      width: 140,
-                      margin: const EdgeInsets.only(right: 5),
-                      color: ColorConstants.backgroundWhite,
-                      child: Column(children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              "images/ac-repair.webp",
-                              fit: BoxFit.cover,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "AC Repair",
-                                    style: headerServiceCardTextStyle,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Color.fromARGB(155, 22, 22, 22),
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        "4.5",
-                                        style: subServiceCardTextStyle,
-                                      ),
-                                      Text(
-                                        "(53k)",
-                                        style: subServiceCardTextStyle,
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text("₹162", style: priceServiceCardTextStyle)
-                                ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AcRepairScreen()),
+                        );
+                      },
+                      child: Container(
+                        width: 140,
+                        margin: const EdgeInsets.only(right: 5),
+                        color: ColorConstants.backgroundWhite,
+                        child: Column(children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                "images/ac-repair.webp",
+                                fit: BoxFit.cover,
                               )),
-                        )
-                      ]),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "AC Repair",
+                                      style: headerServiceCardTextStyle,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "4.5",
+                                          style: subServiceCardTextStyle,
+                                        ),
+                                        Text(
+                                          "(53k)",
+                                          style: subServiceCardTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text("₹162",
+                                        style: priceServiceCardTextStyle)
+                                  ],
+                                )),
+                          )
+                        ]),
+                      ),
                     )
 
                     //card 3

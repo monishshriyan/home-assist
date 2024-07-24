@@ -25,7 +25,7 @@ class FontConstants {
 
 class ValueConstants {
   //container margin
-  static const double containerMargin = 15.0;
+  static const double containerMargin = 8;
 }
 
 //service card textStyles
