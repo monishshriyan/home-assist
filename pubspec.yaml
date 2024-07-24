@@ -43,6 +43,7 @@ dependencies:
   # The following adds a dot indicator
   smooth_page_indicator: ^1.2.0
   rive: ^0.13.4
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:

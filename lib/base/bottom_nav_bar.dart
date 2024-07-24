@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:homeassist/base/account_screen.dart';
 import 'package:homeassist/base/bookings_screen.dart';
@@ -22,7 +23,17 @@ class _MaterialNavState extends State<MaterialNav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: screens[index],
+        body: PageTransitionSwitcher(
+          duration: const Duration(milliseconds: 400),
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+            return FadeThroughTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: screens[index],
+        ),
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
             indicatorColor: ColorConstants.navLabelHighlight,
