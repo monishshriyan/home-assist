@@ -81,9 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: ColorConstants.navLabelHighlight,
                               width: 0.5),
                         ),
-                        child: const CircleAvatar(
-                          radius: 28,
-                          backgroundImage: AssetImage('images/pfp.png'),
+                        child: const InkWell(
+                          child: CircleAvatar(
+                            radius: 28,
+                            backgroundImage: AssetImage('images/pfp.png'),
+                          ),
                         )),
                   ],
                 ),

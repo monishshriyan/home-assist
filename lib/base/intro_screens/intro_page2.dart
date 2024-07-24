@@ -10,9 +10,10 @@ class IntroPage2 extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(
         height: 200,
+        width: 350,
         child: RiveAnimation.asset(
           'animations/onboarding_screen2.riv',
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
           alignment: Alignment.center,
         ),
       ),

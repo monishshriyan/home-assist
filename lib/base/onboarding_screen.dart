@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/intro_screens/intro_page1.dart';
 import 'package:homeassist/base/intro_screens/intro_page2.dart';
 import 'package:homeassist/base/intro_screens/intro_page3.dart';
+import 'package:rive/rive.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {

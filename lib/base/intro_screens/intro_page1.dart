@@ -10,9 +10,10 @@ class IntroPage1 extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(
         height: 200,
+        width: 350,
         child: RiveAnimation.asset(
           'animations/onboarding_screen1.riv',
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
           alignment: Alignment.center,
         ),
       ),
@@ -25,12 +26,15 @@ class IntroPage1 extends StatelessWidget {
             "Find your service",
             style: TextStyle(fontSize: 40, fontFamily: 'Cubano'),
           ),
-          Text(
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-              ),
-              "Discover a wide range of trusted home services tailored to your needs.")
+          SizedBox(
+            width: 400,
+            child: Text(
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+                "Discover a wide range of trusted home services tailored to your needs."),
+          )
         ],
       )
     ]));

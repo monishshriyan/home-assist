@@ -14,13 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'HomeAssist',
-        theme: ThemeData(
-            useMaterial3: true, textTheme: GoogleFonts.interTightTextTheme()),
-        home: const MaterialNav(),
-        routes: {
-          '/home': (context) => const MaterialNav(),
-        },);
-
+      title: 'HomeAssist',
+      theme: ThemeData(
+          useMaterial3: true, textTheme: GoogleFonts.interTightTextTheme()),
+      home: const OnboardingScreen(),
+      routes: {
+        '/home': (context) => const MaterialNav(),
+      },
+    );
   }
 }
