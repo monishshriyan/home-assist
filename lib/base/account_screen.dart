@@ -115,7 +115,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
                                   Icon(
                                     Icons.wallet,

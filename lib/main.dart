@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'HomeAssist',
       theme: ThemeData(
           useMaterial3: true, textTheme: GoogleFonts.interTightTextTheme()),
-      home: const MaterialNav(),
+      home: const OnboardingScreen(),
       routes: {
         '/home': (context) => const MaterialNav(),
       },

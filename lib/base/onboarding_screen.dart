@@ -18,7 +18,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   //controller to keep track of current page
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
   bool onLastPage = false;
   @override
   Widget build(BuildContext context) {

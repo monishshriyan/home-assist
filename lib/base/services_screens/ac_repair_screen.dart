@@ -39,6 +39,21 @@ class AcRepairScreen extends StatelessWidget {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+              child: Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: ValueConstants.containerMargin,
+                vertical: ValueConstants.containerMargin),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              child: Image.asset(
+                width: 50,
+                height: 200,
+                "images/ac-repair.webp",
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          )),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -53,7 +68,7 @@ class AcRepairScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(
+                            backgroundImage: const NetworkImage(
                               'https://picsum.photos/200/300', // placeholder image
                             ),
                             radius: 30,
@@ -65,7 +80,7 @@ class AcRepairScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Service Provider $index',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),

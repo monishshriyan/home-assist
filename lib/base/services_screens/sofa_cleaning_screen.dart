@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:homeassist/base/constants.dart';
 
-class BathroomCleaningScreen extends StatelessWidget {
-  const BathroomCleaningScreen({super.key});
+class SofaCleaningScreen extends StatelessWidget {
+  const SofaCleaningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class BathroomCleaningScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
-                'Bathroom Cleaning',
+                'Sofa Cleaning',
                 style: TextStyle(
                     color: ColorConstants.textDarkGreen, fontSize: 28),
               ),
@@ -48,7 +48,7 @@ class BathroomCleaningScreen extends StatelessWidget {
               child: Image.asset(
                 width: 50,
                 height: 200,
-                "images/bathroom-clean.webp",
+                "images/sofa-cleaning.webp",
                 fit: BoxFit.fitWidth,
               ),
             ),

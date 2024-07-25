@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
+import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -361,54 +362,66 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     //card 3
                     ,
-                    Container(
-                      width: 140,
-                      margin: const EdgeInsets.only(left: 5),
-                      color: ColorConstants.backgroundWhite,
-                      child: Column(children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              "images/sofa-cleaning.webp",
-                              fit: BoxFit.cover,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Sofa Cleaning",
-                                    style: headerServiceCardTextStyle,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Color.fromARGB(155, 22, 22, 22),
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        "4.5",
-                                        style: subServiceCardTextStyle,
-                                      ),
-                                      Text(
-                                        "(53k)",
-                                        style: subServiceCardTextStyle,
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text("₹250", style: priceServiceCardTextStyle)
-                                ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SofaCleaningScreen()),
+                        );
+                      },
+                      child: Container(
+                        width: 140,
+                        margin: const EdgeInsets.only(left: 5),
+                        color: ColorConstants.backgroundWhite,
+                        child: Column(children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                "images/sofa-cleaning.webp",
+                                fit: BoxFit.cover,
                               )),
-                        )
-                      ]),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Sofa Cleaning",
+                                      style: headerServiceCardTextStyle,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "4.5",
+                                          style: subServiceCardTextStyle,
+                                        ),
+                                        Text(
+                                          "(53k)",
+                                          style: subServiceCardTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text("₹250",
+                                        style: priceServiceCardTextStyle)
+                                  ],
+                                )),
+                          )
+                        ]),
+                      ),
                     )
                   ],
                 ),
