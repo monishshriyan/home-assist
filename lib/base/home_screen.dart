@@ -37,7 +37,10 @@ final List<String> carouselImages = [
 ];
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  var searchhistory = [];
   int currentIndex = 0;
+  final SearchController controller = SearchController();
 
   @override
   Widget build(BuildContext context) {
@@ -98,35 +101,127 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 25,
               ),
               //search bar
-              Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: ValueConstants.containerMargin),
-                  decoration: BoxDecoration(
-                      color: ColorConstants.navBackground,
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(
-                          color: ColorConstants.navLabelHighlight, width: 1)
-                      /* border: Border.all(
-                          width: 0.5, color: ColorConstants.darkSlateGrey) */
+              SearchAnchor(
+                searchController: controller,
+                //search view
+                viewHintText: "Find Services",
+                headerHintStyle: TextStyle(
+                  color: ColorConstants.textDarkGreen,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300, 
+                ),
+                viewBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+                //viewBackgroundColor: ColorConstants.backgroundWhite,
+                viewConstraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.5,
+                ),
+                viewTrailing: [
+                  IconButton(
+                    onPressed: () {
+                      String itext = controller.text.trim(); //filtering the input and inserting in the list
+                      if (itext.isNotEmpty) {
+                        setState(() {
+                          searchhistory.insert(0, itext);
+                          searchhistory = searchhistory.toSet().toList();
+                          if (searchhistory.length > 10) {
+                            searchhistory = searchhistory.sublist(0, 10);
+                          }
+                          controller.clear();
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.search),
+                  ),
+                  IconButton(onPressed:(){
+                    controller.clear();
+                  },
+                  icon: const Icon(Icons.clear_rounded),
+                  ),
+                ],
+                //the search bar that is appearing on the home screen
+                builder: (context,controller){
+                  return Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color.fromARGB(255, 115, 194, 138)), 
+                      borderRadius: BorderRadius.circular(50), 
                       ),
-                  padding: const EdgeInsets.all(15),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Row(
-                        /* mainAxisAlignment: MainAxisAlignment.spaceBetween, */
+                    child: SearchBar(
+                      elevation: const WidgetStatePropertyAll(0.0),
+                      controller: controller,
+                      leading: IconButton(
+                        onPressed: (){
+                        
+                      }, 
+                      icon: const Icon(Icons.search),
+                      ),
+/*                     trailing: [
+                        IconButton(
+                          onPressed: (){
+                          }, 
+                          icon: const Icon(Icons.mic),
+                        )
+                      ], 
+*/
+                      hintText: "Find Services",
+                      backgroundColor: WidgetStatePropertyAll(ColorConstants.navBackground), 
+                      onTap: () => controller.openView(),
+                      
+                    ),
+                  );
+                }, 
+                //suggestion screen 
+                suggestionsBuilder: (context,controller){
+                  return [
+                    if (searchhistory.isNotEmpty) //displaying the list with context 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                      child: Row(
                         children: [
-                          const Icon(Icons.search),
-                          const SizedBox(
-                            width: 10,
+                          Icon(Icons.history, color: ColorConstants.textDarkGreen,
+                          size: 26,),
+                          const SizedBox(width: 8.0),
+                          Text(                   //context
+                            'Recents',
+                            style: TextStyle(
+                              color: ColorConstants.textDarkGreen,
+                              fontSize: 24, 
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                          Text(
-                            "Find Services",
-                            style: GoogleFonts.getFont(FontConstants.fontBody,
-                                textStyle: TextStyle(
-                                    color: ColorConstants.textDarkGreen)),
-                          )
-                        ]),
-                  )),
+                        ],
+                      ),
+                    ),
+                    Wrap(
+                      children: List.generate(searchhistory.length, (index){
+                        final item = searchhistory[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                          child: ChoiceChip(
+                          label: Text(item,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: item == controller.text ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 14, 25, 19)
+                          ),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0), 
+                          selected: item == controller.text,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50))
+                          ),
+                          backgroundColor: ColorConstants.navBackground,
+                          selectedColor: const Color.fromARGB(255, 154, 237, 186),
+                          
+                          onSelected: (value) {
+                            controller.text = item;
+                            controller.closeView(item);
+                          },
+                          ),
+                        );
+                      },
+                    ))
+                  ];
+                },
+              ),
               const SizedBox(
                 height: 25,
               ),
@@ -240,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => BathroomCleaningScreen()),
+                              builder: (context) => const BathroomCleaningScreen()),
                         );
                       },
                       child: Container(
@@ -303,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AcRepairScreen()),
+                              builder: (context) => const AcRepairScreen()),
                         );
                       },
                       child: Container(
@@ -367,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SofaCleaningScreen()),
+                              builder: (context) => const SofaCleaningScreen()),
                         );
                       },
                       child: Container(
