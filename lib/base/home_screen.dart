@@ -37,7 +37,6 @@ final List<String> carouselImages = [
 ];
 
 class _HomeScreenState extends State<HomeScreen> {
-
   var searchhistory = [];
   int currentIndex = 0;
   final SearchController controller = SearchController();
@@ -108,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 headerHintStyle: TextStyle(
                   color: ColorConstants.textDarkGreen,
                   fontSize: 20,
-                  fontWeight: FontWeight.w300, 
+                  fontWeight: FontWeight.w300,
                 ),
                 viewBackgroundColor: Color.fromARGB(255, 255, 255, 255),
                 //viewBackgroundColor: ColorConstants.backgroundWhite,
@@ -118,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 viewTrailing: [
                   IconButton(
                     onPressed: () {
-                      String itext = controller.text.trim(); //filtering the input and inserting in the list
+                      String itext = controller.text
+                          .trim(); //filtering the input and inserting in the list
                       if (itext.isNotEmpty) {
                         setState(() {
                           searchhistory.insert(0, itext);
@@ -132,27 +132,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     icon: const Icon(Icons.search),
                   ),
-                  IconButton(onPressed:(){
-                    controller.clear();
-                  },
-                  icon: const Icon(Icons.clear_rounded),
+                  IconButton(
+                    onPressed: () {
+                      controller.clear();
+                    },
+                    icon: const Icon(Icons.clear_rounded),
                   ),
                 ],
                 //the search bar that is appearing on the home screen
-                builder: (context,controller){
+                builder: (context, controller) {
                   return Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color.fromARGB(255, 115, 194, 138)), 
-                      borderRadius: BorderRadius.circular(50), 
-                      ),
+                      border: Border.all(
+                          color: ColorConstants.navLabelHighlight, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     child: SearchBar(
                       elevation: const WidgetStatePropertyAll(0.0),
                       controller: controller,
                       leading: IconButton(
-                        onPressed: (){
-                        
-                      }, 
-                      icon: const Icon(Icons.search),
+                        onPressed: () {
+                          controller.closeView(controller.text);
+                        },
+                        icon: const Icon(Icons.search),
                       ),
 /*                     trailing: [
                         IconButton(
@@ -163,62 +165,84 @@ class _HomeScreenState extends State<HomeScreen> {
                       ], 
 */
                       hintText: "Find Services",
-                      backgroundColor: WidgetStatePropertyAll(ColorConstants.navBackground), 
+                      backgroundColor:
+                          WidgetStatePropertyAll(ColorConstants.navBackground),
                       onTap: () => controller.openView(),
-                      
                     ),
                   );
-                }, 
-                //suggestion screen 
-                suggestionsBuilder: (context,controller){
+                },
+                //suggestion screen
+                suggestionsBuilder: (context, controller) {
                   return [
-                    if (searchhistory.isNotEmpty) //displaying the list with context 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Icon(Icons.history, color: ColorConstants.textDarkGreen,
-                          size: 26,),
-                          const SizedBox(width: 8.0),
-                          Text(                   //context
-                            'Recents',
-                            style: TextStyle(
-                              color: ColorConstants.textDarkGreen,
-                              fontSize: 24, 
-                              fontWeight: FontWeight.w400,
-                            ),
+                    if (searchhistory
+                        //displaying the list with context
+                        .isNotEmpty) //displaying the list with context
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: ValueConstants.containerMargin),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.history,
+                                color: ColorConstants.textDarkGreen,
+                                size: 26,
+                              ),
+                              //context
+                              const SizedBox(width: 8.0),
+                              Text(
+                                //context
+                                'Recents',
+                                style: TextStyle(
+                                  color: ColorConstants.textDarkGreen,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                    Wrap(
-                      children: List.generate(searchhistory.length, (index){
-                        final item = searchhistory[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-                          child: ChoiceChip(
-                          label: Text(item,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: item == controller.text ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 14, 25, 19)
-                          ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0), 
-                          selected: item == controller.text,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50))
-                          ),
-                          backgroundColor: ColorConstants.navBackground,
-                          selectedColor: const Color.fromARGB(255, 154, 237, 186),
-                          
-                          onSelected: (value) {
-                            controller.text = item;
-                            controller.closeView(item);
-                          },
-                          ),
-                        );
-                      },
-                    ))
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: ValueConstants.containerMargin),
+                      child: Wrap(
+                          children: List.generate(
+                        searchhistory.length,
+                        (index) {
+                          final item = searchhistory[index];
+                          return Padding(
+                            padding:
+                                const EdgeInsets.only(left: 4.0, right: 4.0),
+                            child: ChoiceChip(
+                              label: Text(
+                                item,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: item == controller.text
+                                        ? const Color.fromARGB(255, 0, 0, 0)
+                                        : const Color.fromARGB(
+                                            255, 14, 25, 19)),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 4.0),
+                              selected: item == controller.text,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(50))),
+                              backgroundColor: ColorConstants.navBackground,
+                              selectedColor:
+                                  const Color.fromARGB(255, 154, 237, 186),
+                              onSelected: (value) {
+                                controller.text = item;
+                                controller.closeView(item);
+                              },
+                            ),
+                          );
+                        },
+                      )),
+                    )
                   ];
                 },
               ),
@@ -266,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     enlargeCenterPage: true,
                     enlargeFactor: 0.2,
                     autoPlayAnimationDuration:
-                        const Duration(milliseconds: 300),
+                        const Duration(milliseconds: 1000),
                     autoPlayInterval: const Duration(seconds: 5),
 /*                     autoPlayCurve: Curves.fastOutSlowIn, */
                     onPageChanged: (index, reason) {
@@ -335,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BathroomCleaningScreen()),
+                              builder: (context) => BathroomCleaningScreen()),
                         );
                       },
                       child: Container(
