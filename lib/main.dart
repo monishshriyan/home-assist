@@ -5,10 +5,19 @@ import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/onboarding_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://ebzceioxoljcufsrcgkx.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViemNlaW94b2xqY3Vmc3JjZ2t4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM1NjMzNzMsImV4cCI6MjAzOTEzOTM3M30.SScf3A41RidYH75lPnP-BdA3QMPxMB1Fy7qvGN9zck8',
+  );
   runApp(const MyApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,7 +31,7 @@ class MyApp extends StatelessWidget {
               TextSelectionThemeData(cursorColor: ColorConstants.darkSlateGrey),
           useMaterial3: true,
           textTheme: GoogleFonts.interTightTextTheme()),
-      home: const OnboardingScreen(),
+      home: const MaterialNav(),
       routes: {
         '/home': (context) => const MaterialNav(),
       },
