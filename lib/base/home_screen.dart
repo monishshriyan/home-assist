@@ -7,6 +7,7 @@ import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +41,41 @@ class _HomeScreenState extends State<HomeScreen> {
   var searchhistory = [];
   int currentIndex = 0;
   final SearchController controller = SearchController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSearchHistory();
+  }
+
+  Future<void> _loadSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      searchhistory = prefs.getStringList('search_history') ?? [];
+    });
+  }
+
+  Future<void> _saveSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('search_history', List<String>.from(searchhistory));
+  }
+
+  void _handleSearchSubmit() {
+  String itext = controller.text.trim(); 
+  if (itext.isNotEmpty) {
+    setState(() {
+      searchhistory.insert(0, itext);
+      searchhistory = searchhistory.toSet().toList(); // Ensures unique entries
+      if (searchhistory.length > 5) {
+        searchhistory = searchhistory.sublist(0, 5);
+      }
+      _saveSearchHistory();
+      controller.clear(); // Clear the search bar after submission
+    });
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-
+    
                     Container(
                         /* padding: const EdgeInsets.all(10), */
                         decoration: BoxDecoration(
@@ -117,18 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 viewTrailing: [
                   IconButton(
                     onPressed: () {
-                      String itext = controller.text
-                          .trim(); //filtering the input and inserting in the list
-                      if (itext.isNotEmpty) {
-                        setState(() {
-                          searchhistory.insert(0, itext);
-                          searchhistory = searchhistory.toSet().toList();
-                          if (searchhistory.length > 10) {
-                            searchhistory = searchhistory.sublist(0, 10);
-                          }
-                          controller.clear();
-                        });
-                      }
+                      _handleSearchSubmit();
                     },
                     icon: const Icon(Icons.search),
                   ),
@@ -139,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(Icons.clear_rounded),
                   ),
                 ],
+                viewOnSubmitted: (value) => _handleSearchSubmit(),
                 //the search bar that is appearing on the home screen
                 builder: (context, controller) {
                   return Container(
@@ -151,23 +177,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       elevation: const WidgetStatePropertyAll(0.0),
                       controller: controller,
                       leading: IconButton(
-                        onPressed: () {
-                          controller.closeView(controller.text);
-                        },
+                        onPressed: () => controller.openView(),
                         icon: const Icon(Icons.search),
                       ),
-/*                     trailing: [
+    /*                     trailing: [
                         IconButton(
                           onPressed: (){
                           }, 
                           icon: const Icon(Icons.mic),
                         )
                       ], 
-*/
+    */
                       hintText: "Find Services",
                       backgroundColor:
                           WidgetStatePropertyAll(ColorConstants.navBackground),
                       onTap: () => controller.openView(),
+                      
                     ),
                   );
                 },
@@ -292,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     autoPlayAnimationDuration:
                         const Duration(milliseconds: 1000),
                     autoPlayInterval: const Duration(seconds: 5),
-/*                     autoPlayCurve: Curves.fastOutSlowIn, */
+    /*                     autoPlayCurve: Curves.fastOutSlowIn, */
                     onPageChanged: (index, reason) {
                       setState(() {
                         currentIndex = index;
@@ -317,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               )
-
+    
               //services card rows1
               //New Services
               ,
@@ -415,7 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ]),
                       ),
                     ),
-
+    
                     //card 2
                     GestureDetector(
                       onTap: () {
@@ -478,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ]),
                       ),
                     )
-
+    
                     //card 3
                     ,
                     GestureDetector(
@@ -545,9 +570,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
+    
               //service card rows 2
-
+    
               Container(
                   margin: const EdgeInsets.symmetric(
                       horizontal: ValueConstants.containerMargin),
@@ -629,7 +654,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ]),
                     ),
-
+    
                     //card 2
                     Container(
                       width: 140,
@@ -680,7 +705,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ]),
                     )
-
+    
                     //card 3
                     ,
                     Container(
@@ -735,7 +760,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               )
-
+    
               //referral card
               ,
               Container(
