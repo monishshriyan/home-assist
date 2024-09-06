@@ -8,6 +8,8 @@ import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:homeassist/base/services_screens/db_services.dart';
+import 'package:homeassist/service_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,11 +43,24 @@ class _HomeScreenState extends State<HomeScreen> {
   var searchhistory = [];
   int currentIndex = 0;
   final SearchController controller = SearchController();
+  List<ServiceModel> services = [];
+  final DbServices _dbServices = DbServices();
 
   @override
   void initState() {
     super.initState();
     _loadSearchHistory();
+    controller.addListener((){
+      _fetchAndFilterServices();
+    });
+    _fetchAndFilterServices();
+  }
+
+  Future<void> _fetchAndFilterServices() async {
+    List<ServiceModel> fetchServices = await DbServices().fetchServices(controller.text);
+    setState(() {
+      services = fetchServices;
+    });
   }
 
   Future<void> _loadSearchHistory() async {
@@ -99,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello Broda!",
+                            "Hello User!",
                             style: TextStyle(
                                 /* fontFamily: , */
                                 color: ColorConstants.textDarkGreen,
@@ -146,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.w300,
                 ),
                 viewBackgroundColor: Color.fromARGB(255, 255, 255, 255),
-                //viewBackgroundColor: ColorConstants.backgroundWhite,
+                
                 viewConstraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.5,
                 ),
@@ -167,33 +182,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 viewOnSubmitted: (value) => _handleSearchSubmit(),
                 //the search bar that is appearing on the home screen
                 builder: (context, controller) {
-                  return Container(
+                  return GestureDetector(
+                    onTap: () => controller.openView(),
+                    child: Container(
+                      height: 50,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: ValueConstants.containerMargin),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: ColorConstants.navLabelHighlight, width: 1),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: SearchBar(
-                      elevation: const WidgetStatePropertyAll(0.0),
-                      controller: controller,
-                      leading: IconButton(
-                        onPressed: () => controller.openView(),
-                        icon: const Icon(Icons.search),
-                      ),
-    /*                     trailing: [
-                        IconButton(
-                          onPressed: (){
-                          }, 
-                          icon: const Icon(Icons.mic),
-                        )
-                      ], 
-    */
-                      hintText: "Find Services",
-                      backgroundColor:
-                          WidgetStatePropertyAll(ColorConstants.navBackground),
-                      onTap: () => controller.openView(),
-                      
-                    ),
+                        color: ColorConstants.navBackground,
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                            color: ColorConstants.navLabelHighlight, width: 1)
+                        /* border: Border.all(
+                            width: 0.5, color: ColorConstants.darkSlateGrey) */
+                        ),
+                    padding: const EdgeInsets.all(15),
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Row(
+                          /* mainAxisAlignment: MainAxisAlignment.spaceBetween, */
+                          children: [
+                            const Icon(Icons.search),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Find Services",
+                              style: GoogleFonts.getFont(FontConstants.fontBody,
+                                  textStyle: TextStyle(
+                                      color: ColorConstants.textDarkGreen,
+                                      fontSize: 16, fontWeight: FontWeight.w300)),
+                            )
+                          ]),
+                    )),
                   );
                 },
                 //suggestion screen
@@ -261,13 +282,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const Color.fromARGB(255, 154, 237, 186),
                               onSelected: (value) {
                                 controller.text = item;
-                                controller.closeView(item);
+                                
                               },
                             ),
                           );
                         },
                       )),
-                    )
+                    ),
+                    if (controller.text.isNotEmpty) ... [
+                      ListView.builder(
+                        itemCount: services.length,
+                        itemBuilder: (context, index) {
+                          final service = services[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            child: ListTile(
+                              title: Text(service.providerName),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Provider: ${service.serviceName}'),
+                                  Text('Rating: ${service.rating}'),
+                                  Text('Price: \$${service.price}'),
+                                  Text('Description: ${service.description}'),
+                                ],
+                              ),
+                            )
+                          );
+                        },
+                      )
+                    ]
                   ];
                 },
               ),
