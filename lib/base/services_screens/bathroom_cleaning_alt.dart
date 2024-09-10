@@ -41,10 +41,25 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                   floating: false,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Text('Electrician Services'),
+                    title: Text('Bathroom Cleaning'),
                   ),
                   backgroundColor: ColorConstants.navBackground,
                 ),
+                SliverToBoxAdapter(
+                    child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: ValueConstants.containerMargin,
+                      vertical: ValueConstants.containerMargin),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    child: Image.asset(
+                      width: 50,
+                      height: 200,
+                      "images/bathroom-clean.webp",
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                )),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
