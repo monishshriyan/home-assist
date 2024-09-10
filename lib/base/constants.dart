@@ -42,3 +42,9 @@ const TextStyle priceServiceCardTextStyle = TextStyle(
     fontSize: 14,
     color: Color.fromARGB(255, 0, 0, 0),
     fontWeight: FontWeight.w500);
+
+//service provider textStyles
+const TextStyle headerServiceProviderTextStyle = TextStyle(
+    fontSize: 20,
+    color: Color.fromARGB(255, 9, 9, 9),
+    fontWeight: FontWeight.w500);
