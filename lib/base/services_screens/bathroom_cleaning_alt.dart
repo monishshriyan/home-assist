@@ -11,8 +11,9 @@ class BathroomCleaningAlt extends StatefulWidget {
 
 class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
   final _future = Supabase.instance.client
-      .from('services')
-      .select() /* .eq('service_name', 'Electrician') */;
+      .from('service_providers')
+      .select()
+      .eq('service_type_id', 'c0ba4eae-0931-43c1-b85a-9226e7ae28d7');
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,12 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                   floating: false,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Text('Bathroom Cleaning'),
+                    centerTitle: true,
+                    title: Text(
+                      'Bathroom Cleaning',
+                      style: TextStyle(
+                          color: ColorConstants.textDarkGreen, fontSize: 28),
+                    ),
                   ),
                   backgroundColor: ColorConstants.navBackground,
                 ),
@@ -70,18 +76,14 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               // Image
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(30),
-                                child: Image.network(
-                                  service!['image_url'].toString(),
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  service!['image_url']
+                                      .toString(), // placeholder image
                                 ),
+                                radius: 30,
                               ),
                               const SizedBox(
                                   width: 10), // Space between image and text
@@ -118,13 +120,17 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                                           'Book Now pressed for ${service['provider_name']}');
                                     },
                                     child: Text(
-                                      'Book Now',
+                                      'Book',
                                       style: TextStyle(
                                         color: ColorConstants.textWhite,
                                       ),
                                     ),
                                   ),
-                                  Text('from ₹${service['price'].toString()}'),
+                                  Text(
+                                    'from ₹${service['starting_price'].toString()}',
+                                    style: TextStyle(
+                                        color: ColorConstants.textLightGrey),
+                                  ),
                                 ],
                               ),
                             ],
