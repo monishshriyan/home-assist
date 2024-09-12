@@ -4,6 +4,8 @@ import 'package:homeassist/base/bottom_nav_bar.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/onboarding_screen.dart';
+import 'package:homeassist/base/pages/login_page.dart';
+import 'package:homeassist/base/pages/splash_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -25,16 +27,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HomeAssist',
-      theme: ThemeData(
-          textSelectionTheme:
-              TextSelectionThemeData(cursorColor: ColorConstants.darkSlateGrey),
-          useMaterial3: true,
-          textTheme: GoogleFonts.interTightTextTheme()),
-      home: const MaterialNav(),
-      routes: {
-        '/home': (context) => const MaterialNav(),
-      },
-    );
+        title: 'HomeAssist',
+        theme: ThemeData(
+            textSelectionTheme: TextSelectionThemeData(
+                cursorColor: ColorConstants.darkSlateGrey),
+            useMaterial3: true,
+            textTheme: GoogleFonts.interTightTextTheme()),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashPage(),
+          '/home': (context) => const MaterialNav(),
+          '/login': (context) => const LoginPage(),
+        });
   }
 }

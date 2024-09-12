@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homeassist/main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -12,6 +14,29 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  Future<void> _signOut() async {
+    try {
+      await supabase.auth.signOut();
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/login');
+      }
+    } on AuthException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Unexpected error occurred'),
+              backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   static const double _sizedBoxHeight = 25;
   static const double _sizedBoxWidth = 10;
   static const double _iconSize = 32;
@@ -92,6 +117,11 @@ class _AccountScreenState extends State<AccountScreen> {
                                         color: ColorConstants.textLightGrey,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w900),
+                                  ),
+                                  const SizedBox(height: 18),
+                                  TextButton(
+                                    onPressed: _signOut,
+                                    child: const Text('Sign Out'),
                                   ),
                                 ]),
                           ),

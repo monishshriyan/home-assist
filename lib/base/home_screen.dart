@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:homeassist/base/pages/splash_screen.dart';
 import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_alt.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
+import 'package:homeassist/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,12 +43,15 @@ final List<String> carouselImages = [
 class _HomeScreenState extends State<HomeScreen> {
   var searchhistory = [];
   int currentIndex = 0;
+  String _username = '';
+
   final SearchController controller = SearchController();
 
   @override
   void initState() {
     super.initState();
     _loadSearchHistory();
+    _fetchUsername();
   }
 
   Future<void> _loadSearchHistory() async {
@@ -78,6 +83,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _fetchUsername() async {
+    final userId = supabase.auth.currentSession?.user.id;
+    if (userId != null) {
+      final response = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', userId)
+          .single();
+      final username = response['username'] as String;
+      setState(() {
+        _username = username;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello Broda!",
+                            'Hello $_username',
                             style: TextStyle(
                                 /* fontFamily: , */
                                 color: ColorConstants.textDarkGreen,
