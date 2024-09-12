@@ -1,16 +1,13 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:homeassist/base/constants.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:homeassist/base/pages/splash_screen.dart';
 import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_alt.dart';
-import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
 import 'package:homeassist/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var searchhistory = [];
   int currentIndex = 0;
   String _username = '';
+  String? _avatarUrl = '';
 
   final SearchController controller = SearchController();
 
@@ -52,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadSearchHistory();
     _fetchUsername();
+    _fetchAvatarUrl();
   }
 
   Future<void> _loadSearchHistory() async {
@@ -98,6 +97,27 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String? _getCurrentUserId() {
+    final user = Supabase.instance.client.auth.currentUser;
+    return user?.id;
+  }
+
+  //fetch pfp
+  Future<void> _fetchAvatarUrl() async {
+    final userId = _getCurrentUserId();
+    if (userId != null) {
+      final response = await Supabase.instance.client
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', userId)
+          .single();
+
+      setState(() {
+        _avatarUrl = response['avatar_url'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,19 +157,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     Container(
-                        /* padding: const EdgeInsets.all(10), */
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                              color: ColorConstants.navLabelHighlight,
-                              width: 0.5),
-                        ),
-                        child: const InkWell(
-                          child: CircleAvatar(
-                            radius: 28,
-                            backgroundImage: AssetImage('images/pfp.png'),
-                          ),
-                        )),
+                      /* padding: const EdgeInsets.all(10), */
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                            color: ColorConstants.navLabelHighlight,
+                            width: 0.5),
+                      ),
+                      child: _avatarUrl != null
+                          ? CircleAvatar(
+                              radius: 28,
+                              backgroundImage: NetworkImage(_avatarUrl!),
+                            )
+                          : const CircleAvatar(
+                              radius: 28,
+                              child: Icon(Icons.person),
+                            ),
+                    ),
                   ],
                 ),
               ),

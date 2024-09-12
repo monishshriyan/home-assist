@@ -24,7 +24,7 @@ class _MaterialNavState extends State<MaterialNav> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 0),
           transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
             return FadeThroughTransition(
               animation: primaryAnimation,

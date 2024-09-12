@@ -48,6 +48,8 @@ dependencies:
   supabase_flutter: ^2.6.0
   supabase_auth_ui: ^0.5.1
   image_picker: ^1.1.2
+  provider: ^6.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
