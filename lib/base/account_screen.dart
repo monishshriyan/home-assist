@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:homeassist/base/constants.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:homeassist/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -14,9 +11,50 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  String _username = '';
+  String _avatarUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    await _fetchUsername(); // Load Username
+    await _fetchAvatarUrl(); // Load Avatar URL
+  }
+
+  String? _getCurrentUserId() {
+    final user = Supabase.instance.client.auth.currentUser;
+    return user?.id;
+  }
+
+  Future<void> _fetchUsername() async {
+    final userId = _getCurrentUserId();
+    if (userId != null) {
+      final response = await Supabase.instance.client
+          .from('profiles')
+          .select('username')
+          .eq('id', userId)
+          .single();
+    }
+  }
+
+  Future<void> _fetchAvatarUrl() async {
+    final userId = _getCurrentUserId();
+    if (userId != null) {
+      final response = await Supabase.instance.client
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', userId)
+          .single();
+    }
+  }
+
   Future<void> _signOut() async {
     try {
-      await supabase.auth.signOut();
+      await Supabase.instance.client.auth.signOut();
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/login');
       }
@@ -87,9 +125,14 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             radius: 46,
-                            backgroundImage: AssetImage('images/pfp.png'),
+                            backgroundImage: _avatarUrl.isNotEmpty
+                                ? NetworkImage(_avatarUrl)
+                                : null,
+                            child: _avatarUrl.isEmpty
+                                ? Icon(Icons.person, size: 46)
+                                : null,
                           ),
                           const SizedBox(
                             width: 18,
@@ -100,9 +143,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Ho Lee Fok",
+                                    _username,
                                     style: TextStyle(
-                                        /* fontFamily: , */
                                         color: ColorConstants.textDarkGreen,
                                         fontSize: 26,
                                         fontWeight: FontWeight.w900),
@@ -113,7 +155,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                   Text(
                                     "+91 7206942069",
                                     style: TextStyle(
-                                        /* fontFamily: , */
                                         color: ColorConstants.textLightGrey,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w900),
@@ -131,8 +172,6 @@ class _AccountScreenState extends State<AccountScreen> {
                   thickness: 15,
                   height: 60,
                   color: Color.fromARGB(147, 227, 227, 227),
-/*                   indent: ValueConstants.containerMargin,
-                  endIndent: ValueConstants.containerMargin, */
                 ),
 
                 ListView(
@@ -162,7 +201,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               ),
                               Row(
                                 children: [
-                                  const Icon(Icons.chevron_right),
+                                  Icon(Icons.chevron_right),
                                 ],
                               ),
                             ],
@@ -178,7 +217,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
                                   Icon(
                                     Icons.home_filled,
@@ -195,7 +234,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               ),
                               Row(
                                 children: [
-                                  const Icon(Icons.chevron_right),
+                                  Icon(Icons.chevron_right),
                                 ],
                               ),
                             ],
@@ -211,7 +250,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
                                   Icon(
                                     Icons.location_pin,
@@ -228,7 +267,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               ),
                               Row(
                                 children: [
-                                  const Icon(Icons.chevron_right),
+                                  Icon(Icons.chevron_right),
                                 ],
                               ),
                             ],

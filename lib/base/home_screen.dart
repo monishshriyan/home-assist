@@ -5,8 +5,8 @@ import 'package:homeassist/base/services_screens/ac_repair_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_alt.dart';
 import 'package:homeassist/base/services_screens/sofa_cleaning_screen.dart';
 import 'package:homeassist/main.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var searchhistory = [];
   int currentIndex = 0;
   String _username = '';
-  String? _avatarUrl = '';
+  String _avatarUrl = '';
 
   final SearchController controller = SearchController();
 
@@ -49,8 +49,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadSearchHistory();
-    _fetchUsername();
-    _fetchAvatarUrl();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    await _fetchUsername(); // Load Username
+    await _fetchAvatarUrl(); // Load Avatar URL
   }
 
   Future<void> _loadSearchHistory() async {
@@ -82,27 +86,28 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String? _getCurrentUserId() {
+    final user = Supabase.instance.client.auth.currentUser;
+    return user?.id;
+  }
+
   Future<void> _fetchUsername() async {
-    final userId = supabase.auth.currentSession?.user.id;
+    final userId = _getCurrentUserId();
     if (userId != null) {
-      final response = await supabase
+      final response = await Supabase.instance.client
           .from('profiles')
           .select('username')
           .eq('id', userId)
           .single();
+
       final username = response['username'] as String;
+
       setState(() {
         _username = username;
       });
     }
   }
 
-  String? _getCurrentUserId() {
-    final user = Supabase.instance.client.auth.currentUser;
-    return user?.id;
-  }
-
-  //fetch pfp
   Future<void> _fetchAvatarUrl() async {
     final userId = _getCurrentUserId();
     if (userId != null) {
@@ -112,8 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
           .eq('id', userId)
           .single();
 
+      final avatarUrl = response['avatar_url'] as String;
+
       setState(() {
-        _avatarUrl = response['avatar_url'];
+        _avatarUrl = avatarUrl;
       });
     }
   }
@@ -169,9 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               radius: 28,
                               backgroundImage: NetworkImage(_avatarUrl!),
                             )
-                          : const CircleAvatar(
+                          : CircleAvatar(
                               radius: 28,
-                              child: Icon(Icons.person),
+                              backgroundImage: NetworkImage(_avatarUrl!),
                             ),
                     ),
                   ],
