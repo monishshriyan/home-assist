@@ -5,6 +5,7 @@ import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/onboarding_screen.dart';
 import 'package:homeassist/base/pages/login_page.dart';
+import 'package:homeassist/base/pages/new_user_signup.dart';
 import 'package:homeassist/base/pages/signin_page.dart';
 import 'package:homeassist/base/pages/splash_screen.dart';
 import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const SplashPage(),
           '/login': (context) => const SigninPage(),
+          '/edit': (context) => const NewUserSignup(),
           '/home': (context) => const MaterialNav(),
         });
   }

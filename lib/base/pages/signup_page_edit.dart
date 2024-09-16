@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
+import 'package:homeassist/base/components/avatar.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,6 +23,9 @@ class _SignupPageState extends State<SignupPage> {
   late final TextEditingController _addressController = TextEditingController();
   late final TextEditingController _phoneNumberController =
       TextEditingController();
+
+  String? _avatarUrl;
+  var _loading = true;
 
   // Update Profile Function
   Future<void> _updateProfile() async {
@@ -101,6 +105,45 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  /// Called when image has been uploaded to Supabase storage from within Avatar widget
+  Future<void> _onUpload(String imageUrl) async {
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      final userEmail = supabase.auth.currentUser!.email;
+      await supabase.from('profiles').upsert({
+        'id': userId,
+        'avatar_url': imageUrl,
+        'email': userEmail,
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Updated your profile image and email!')),
+        );
+      }
+    } on PostgrestException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Unexpected error occurred'),
+              backgroundColor: Colors.red),
+        );
+      }
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _avatarUrl = imageUrl;
+    });
+  }
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -133,6 +176,10 @@ class _SignupPageState extends State<SignupPage> {
                 'Create a new account',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Avatar(
+                imageUrl: _avatarUrl,
+                onUpload: _onUpload,
               ),
               const SizedBox(height: 12),
               TextFormField(

@@ -49,6 +49,12 @@ class _AccountScreenState extends State<AccountScreen> {
           .select('avatar_url')
           .eq('id', userId)
           .single();
+
+      final avatarUrl = response['avatar_url'] as String;
+
+      setState(() {
+        _avatarUrl = avatarUrl;
+      });
     }
   }
 
@@ -125,15 +131,15 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 46,
-                            backgroundImage: _avatarUrl.isNotEmpty
-                                ? NetworkImage(_avatarUrl)
-                                : null,
-                            child: _avatarUrl.isEmpty
-                                ? Icon(Icons.person, size: 46)
-                                : null,
-                          ),
+                          _avatarUrl != null
+                              ? CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(_avatarUrl),
+                                )
+                              : CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(_avatarUrl),
+                                ),
                           const SizedBox(
                             width: 18,
                           ),
