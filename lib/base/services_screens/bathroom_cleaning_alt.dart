@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,8 +13,42 @@ class BathroomCleaningAlt extends StatefulWidget {
 class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
   final _future = Supabase.instance.client
       .from('service_providers')
-      .select()
-      .eq('service_type_id', 'c0ba4eae-0931-43c1-b85a-9226e7ae28d7');
+      .select(
+          'id, service_type_id, image_url, provider_name, description, rating, starting_price')
+      .eq('service_type_id', 'c0ba4eae-0931-43c1-b85a-9226e7ae28d7')
+      .eq('is_booked', false);
+
+  Future<void> _bookServiceProvider(
+      BuildContext context, String serviceProviderId, String serviceId) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      Fluttertoast.showToast(
+        msg: 'You need to be logged in to book a service.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+      return;
+    }
+
+    // Insert a new booking
+    await Supabase.instance.client.from('bookings').insert({
+      'user_id': user.id,
+      'provider_id': serviceProviderId,
+      'service_id': serviceId,
+      'booking_date': DateTime.now().toIso8601String(),
+    });
+
+    // Update the service provider's status to indicate they're booked
+    await Supabase.instance.client
+        .from('service_providers')
+        .update({'is_booked': true}).eq('id', serviceProviderId);
+
+    Fluttertoast.showToast(
+      msg: 'Booking successful!',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +63,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No data available'));
           } else {
-            final services = snapshot.data;
-            print('Data fetched: $services');
+            final services = snapshot.data as List<Map<String, dynamic>>;
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -69,7 +103,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final service = services?[index];
+                      final service = services[index];
                       return Card(
                         elevation: 0,
                         margin: const EdgeInsets.all(10),
@@ -80,13 +114,11 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                               // Image
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  service!['image_url']
-                                      .toString(), // placeholder image
+                                  service['image_url'] ?? '',
                                 ),
                                 radius: 30,
                               ),
-                              const SizedBox(
-                                  width: 10), // Space between image and text
+                              const SizedBox(width: 10),
 
                               // Title and subtitle
                               Expanded(
@@ -95,11 +127,11 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      service['provider_name'].toString(),
+                                      service['provider_name'] ?? '',
                                       style: headerServiceProviderTextStyle,
                                     ),
-                                    Text('${service['description']}'),
-                                    Text('✦ ${service['rating'].toString()}'),
+                                    Text(service['description'] ?? ''),
+                                    Text('✦ ${service['rating'] ?? 'N/A'}'),
                                   ],
                                 ),
                               ),
@@ -112,12 +144,14 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           ColorConstants.darkSlateGrey,
-                                      elevation: 0.1, // Remove elevation
+                                      elevation: 0.1,
                                     ),
-                                    onPressed: () {
-                                      // Add your booking logic here
-                                      print(
-                                          'Book Now pressed for ${service['provider_name']}');
+                                    onPressed: () async {
+                                      await _bookServiceProvider(
+                                        context,
+                                        service['id'],
+                                        service['service_type_id'],
+                                      );
                                     },
                                     child: Text(
                                       'Book',
@@ -127,7 +161,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                                     ),
                                   ),
                                   Text(
-                                    'from ₹${service['starting_price'].toString()}',
+                                    'from ₹${service['starting_price'] ?? 'N/A'}',
                                     style: TextStyle(
                                         color: ColorConstants.textLightGrey),
                                   ),
@@ -138,7 +172,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                         ),
                       );
                     },
-                    childCount: services?.length,
+                    childCount: services.length,
                   ),
                 ),
               ],

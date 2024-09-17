@@ -17,7 +17,7 @@ class _MaterialNavState extends State<MaterialNav> {
 
   final screens = [
     const HomeScreen(),
-    const BookingsScreen(),
+    BookingsScreen(),
     const AccountScreen(),
   ];
   @override
