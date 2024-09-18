@@ -4,6 +4,7 @@ import 'package:homeassist/base/account_screen.dart';
 import 'package:homeassist/base/bookings_screen.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/constants.dart';
+import 'package:homeassist/base/search_screen.dart';
 
 class MaterialNav extends StatefulWidget {
   const MaterialNav({super.key});
@@ -17,7 +18,8 @@ class _MaterialNavState extends State<MaterialNav> {
 
   final screens = [
     const HomeScreen(),
-    BookingsScreen(),
+    const SearchScreen(),
+    const BookingsScreen(),
     const AccountScreen(),
   ];
   @override
@@ -66,6 +68,16 @@ class _MaterialNavState extends State<MaterialNav> {
                       size: 30,
                     ),
                     label: 'Discover'),
+                NavigationDestination(
+                    icon: Icon(
+                      Icons.search_outlined,
+                      size: 30,
+                    ),
+                    selectedIcon: Icon(
+                      Icons.search,
+                      size: 30,
+                    ),
+                    label: 'Search'),
                 NavigationDestination(
                     icon: Icon(
                       Icons.calendar_month_outlined,

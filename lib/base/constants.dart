@@ -48,3 +48,9 @@ const TextStyle headerServiceProviderTextStyle = TextStyle(
     fontSize: 20,
     color: Color.fromARGB(255, 9, 9, 9),
     fontWeight: FontWeight.w500);
+
+const TextStyle subheaderServiceProviderTextStyle = TextStyle(
+    fontSize: 16,
+    color: Color.fromARGB(255, 9, 9, 9),
+    fontWeight: FontWeight.w500
+);
