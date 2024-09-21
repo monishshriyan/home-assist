@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/components/db_model.dart';
+import 'package:intl/intl.dart';
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key,});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -14,6 +16,57 @@ class _SearchScreenState extends State<SearchScreen> {
   List<ServiceModel> allservices = [];
   List<ServiceModel> filteredServices = [];
   final SupabaseClient supabase = Supabase.instance.client;
+  TextEditingController _searchController = TextEditingController();
+
+  Future<void> _bookServiceProvider(
+       String serviceProviderId,DateTime selectedDate, String serviceId) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      Fluttertoast.showToast(
+        msg: 'You need to be logged in to book a service.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+      return;
+    }
+
+    // Insert a new booking
+    await Supabase.instance.client.from('bookings').insert({
+      'user_id': user.id,
+      'provider_id': serviceProviderId,
+      'service_id': serviceId,
+      'booking_date': DateTime.now().toIso8601String(),
+      'booked_for': selectedDate.toIso8601String(),
+    });}
+
+  Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
+  // Format the date to only compare the day
+  String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+  final response = await supabase
+      .from('bookings')
+      .select()
+      .eq('provider_id', serviceProviderId)
+      .eq('booked_for', formattedDate);
+
+  if (response is List<dynamic>) {
+    for (var booking in response) {
+      String bookedUserId = booking['user_id'];
+      DateTime bookedForDate = DateTime.parse(booking['booked_for']);
+      // Check if the user has already booked the provider on the same date
+      if (bookedUserId == userId && DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
+        // User has already booked the provider for this date
+        return false;
+      } 
+      // Check if the provider is already booked by someone else for the same date
+      else if (bookedUserId != userId) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 
   Future<List<ServiceModel>> _fetchServices() async {
     print("Fetching services...");  
@@ -63,6 +116,15 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     _fetchData();
     super.initState();
+    _searchController.addListener((){
+      _filterServices(_searchController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
 
@@ -86,18 +148,46 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: ColorConstants.navLabelHighlight, width: 1),
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        child: TextField(
-                          onChanged: (value) => _filterServices(value),
-                          decoration: InputDecoration(
-                            hintText: 'Find Services',
-                            hintStyle: TextStyle(color: Colors.black,fontSize: 18),
-                            prefixIcon: Icon(Icons.search, color: Colors.black,size: 25,),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                // onChanged: (value) => _filterServices(value),
+                                decoration: InputDecoration(
+                                  hintText: 'Find Services',
+                                  hintStyle: TextStyle(color: Colors.black,fontSize: 18),
+                                  prefixIcon: Icon(Icons.search, color: Colors.black,size: 25,),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(vertical: 15),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.clear, color: Colors.black,),
+                              onPressed: () {
+                                _searchController.clear();
+                                _filterServices('');
+                              },)
+                          ],
                         ),
                       ),
                     ),
+                     filteredServices.isEmpty? SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            'No results found',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                :
                     SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -150,10 +240,58 @@ class _SearchScreenState extends State<SearchScreen> {
                                           ColorConstants.darkSlateGrey,
                                       elevation: 0.1, // Remove elevation
                                     ),
-                                    onPressed: () {
+                                    onPressed: () async{
                                       // Add your booking logic here
                                       print(
                                           'Book Now pressed for ${service.providerName}');
+                                       DateTime today = DateTime.now();
+                                        DateTime? selectedDate = await showDatePicker(
+                                          context: context,
+                                          initialDate: today,
+                                          firstDate: today,
+                                          lastDate: today.add(Duration(days: 5)),
+                                        );
+                                        if (selectedDate != null) {
+                                      // Step 2: Insert booking into Supabase
+                                      // Assuming you have access to providerId and userId
+                                      String providerId = service.id;  // Provider ID from the current service
+                                      String service_id = service.service_id;
+                                      final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
+                                      String userId = user!.id;
+                                      bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
+                                      if (!isAvailable) {
+                                        // Show appropriate popup based on the availability
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Booking Unavailable'),
+                                              content: Text('Provider currently not available for selected date, choose another date'),
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  child: Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                      else {
+                                      await _bookServiceProvider(providerId, selectedDate, service_id);
+                                      
+                                      String formattedDate = DateFormat('dd-MM-yyyy').format(selectedDate);
+
+                                      // Step 3: Display the toast with the formatted date
+                                      Fluttertoast.showToast(
+                                        msg: 'Booking successfully scheduled for $formattedDate!',
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                      );
+                                      }
+                                    }
                                     },
                                     child: Text(
                                       'Book',

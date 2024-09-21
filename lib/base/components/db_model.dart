@@ -5,6 +5,7 @@ class ServiceModel {
   final double rating;
   final int price;
   final String imgUrl;
+  final String service_id;
   final String description;
 
   ServiceModel({
@@ -14,6 +15,7 @@ class ServiceModel {
     required this.rating,
     required this.price,
     required this.imgUrl,
+    required this.service_id,
     this.description = '',
   });
 
@@ -26,6 +28,7 @@ class ServiceModel {
       rating: map['rating'] as double,
       price: map['starting_price'] as int,
       imgUrl: map['image_url'] as String,
+      service_id: map['service_type_id'] as String,
       description: map['description'] as String? ?? '',
     );
   }
@@ -39,6 +42,7 @@ class ServiceModel {
       'rating': rating,
       'starting_price': price,
       'image_url': imgUrl,
+      'service_type_id': service_id,
       'description': description,
     };
   }
