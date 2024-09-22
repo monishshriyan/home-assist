@@ -6,17 +6,17 @@ import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/components/db_model.dart';
 import 'package:intl/intl.dart';
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key,});
+  const SearchScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchScreen> createState() => SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class SearchScreenState extends State<SearchScreen> {
   List<ServiceModel> allservices = [];
   List<ServiceModel> filteredServices = [];
   final SupabaseClient supabase = Supabase.instance.client;
-  TextEditingController _searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   Future<void> _bookServiceProvider(
        String serviceProviderId,DateTime selectedDate, String serviceId) async {
@@ -40,9 +40,8 @@ class _SearchScreenState extends State<SearchScreen> {
     });}
 
   Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
-  // Format the date to only compare the day
-  String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
 
+  String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
   final response = await supabase
       .from('bookings')
       .select()
@@ -64,28 +63,27 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     }
   }
-
   return true;
-}
-
+  }
+  
   Future<List<ServiceModel>> _fetchServices() async {
-    print("Fetching services...");  
+    //print("Fetching services...");  
     final response = await supabase
         .from('service_providers')
         .select(); 
-    print("Database response: $response");
+    //print("Database response: $response");
 
     if (response is List<dynamic>) {
       // Map the response to your model
       List<ServiceModel> allservices = response
           .map((item) =>ServiceModel.fromMap(item as Map<String, dynamic>))
           .toList();
-      print('Data fetched: $allservices');
+      //print('Data fetched: $allservices');
       return allservices;
       
     } else {
       throw Exception('Failed to load services');
-      print('failed to load services');
+      //print('failed to load services');
     }
   }
 
@@ -109,21 +107,22 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       filteredServices = filtered;
     });
-    print('Filtered services: $filteredServices');
+    //print('Filtered services: $filteredServices');
   }
 
   @override
   void initState() {
     _fetchData();
     super.initState();
-    _searchController.addListener((){
-      _filterServices(_searchController.text);
+    searchController.addListener((){
+      _filterServices(searchController.text);
     });
+
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -139,7 +138,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   slivers: [
                     SliverToBoxAdapter(
                       child: Container(
-                        margin: EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                           horizontal: ValueConstants.containerMargin,
                           vertical: 18.0),
                         decoration: BoxDecoration(
@@ -152,9 +151,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           children: [
                             Expanded(
                               child: TextField(
-                                controller: _searchController,
+                                controller: searchController,
                                 // onChanged: (value) => _filterServices(value),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Find Services',
                                   hintStyle: TextStyle(color: Colors.black,fontSize: 18),
                                   prefixIcon: Icon(Icons.search, color: Colors.black,size: 25,),
@@ -164,19 +163,19 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.clear, color: Colors.black,),
+                              icon: const Icon(Icons.clear, color: Colors.black,),
                               onPressed: () {
-                                _searchController.clear();
+                                searchController.clear();
                                 _filterServices('');
                               },)
                           ],
                         ),
                       ),
                     ),
-                     filteredServices.isEmpty? SliverToBoxAdapter(
+                     filteredServices.isEmpty? const SliverToBoxAdapter(
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: EdgeInsets.all(20.0),
                           child: Text(
                             'No results found',
                             style: TextStyle(
@@ -224,7 +223,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       service.serviceName.toString(),
                                       style: subheaderServiceProviderTextStyle,
                                     ),
-                                    Text('${service.description}'),
+                                    Text(service.description),
                                     Text('✦ ${service.rating.toString()}'),
                                   ],
                                 ),
@@ -242,20 +241,40 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onPressed: () async{
                                       // Add your booking logic here
-                                      print(
-                                          'Book Now pressed for ${service.providerName}');
                                        DateTime today = DateTime.now();
                                         DateTime? selectedDate = await showDatePicker(
                                           context: context,
                                           initialDate: today,
                                           firstDate: today,
-                                          lastDate: today.add(Duration(days: 5)),
+                                          lastDate: today.add(const Duration(days: 5)),
+                                          builder: (BuildContext context, Widget? child) {
+                                            return Theme(
+                                              data: ThemeData.light().copyWith(
+                                                // Customize the color of the date picker dialog
+                                                primaryColor: Colors.teal,            // Header background color
+                                                hintColor: ColorConstants.deepGreenAccent,              // Selected date color
+                                                colorScheme: const ColorScheme.light(
+                                                  primary: Colors.teal,               // Header background color
+                                                  onPrimary: Colors.white,            // Header text color
+                                                  surface:Colors.white,         // Background color of date cells
+                                                  onSurface: Colors.black,            // Default text color
+                                                ),
+                                                dialogBackgroundColor: Colors.white,  // Background color of the date picker
+                                                textButtonTheme: TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor: ColorConstants.textDarkGreen,             // Button text color
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            );
+                                          },
                                         );
                                         if (selectedDate != null) {
                                       // Step 2: Insert booking into Supabase
                                       // Assuming you have access to providerId and userId
                                       String providerId = service.id;  // Provider ID from the current service
-                                      String service_id = service.service_id;
+                                      String serviceId = service.service_id;
                                       final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
                                       String userId = user!.id;
                                       bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
@@ -265,14 +284,20 @@ class _SearchScreenState extends State<SearchScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: Text('Booking Unavailable'),
-                                              content: Text('Provider currently not available for selected date, choose another date'),
+                                              title: const Text('Booking Unavailable'),
+                                              content: const Text('Provider currently not available for selected date, choose another date'),
                                               actions: <Widget>[
-                                                ElevatedButton(
-                                                  child: Text('OK'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                    backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                    foregroundColor: ColorConstants.textDarkGreen, // Set the text color
+                                                    ),
+                                                    child: const Text('OK'),
+                                                  ),
                                                 ),
                                               ],
                                             );
@@ -280,16 +305,39 @@ class _SearchScreenState extends State<SearchScreen> {
                                         );
                                       }
                                       else {
-                                      await _bookServiceProvider(providerId, selectedDate, service_id);
+                                      await _bookServiceProvider(providerId, selectedDate, serviceId);
                                       
-                                      String formattedDate = DateFormat('dd-MM-yyyy').format(selectedDate);
+                                      String formattedDate = DateFormat('dd MMMM').format(selectedDate);
 
                                       // Step 3: Display the toast with the formatted date
-                                      Fluttertoast.showToast(
-                                        msg: 'Booking successfully scheduled for $formattedDate!',
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                      );
+                                      // Fluttertoast.showToast(
+                                      //   msg: 'Booking successfully scheduled for $formattedDate!',
+                                      //   toastLength: Toast.LENGTH_SHORT,
+                                      //   gravity: ToastGravity.BOTTOM,
+                                      // );
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text('Booking Successful!'),
+                                              content: Text('Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.'),
+                                              actions: <Widget>[
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                    backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                    foregroundColor: ColorConstants.textDarkGreen, // Set the text color
+                                                    ),
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }
                                     }
                                     },
