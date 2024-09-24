@@ -77,7 +77,7 @@ class _SignupPageState extends State<SignupPage> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
                 builder: (context) =>
-                    const MaterialNav()), // Navigate to HomePage
+                     MaterialNav()), // Navigate to HomePage
           );
         }
       }

@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
         if (session != null) {
           _redirecting = true;
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MaterialNav()),
+            MaterialPageRoute(builder: (context) => MaterialNav()),
           );
         }
       },

@@ -8,9 +8,8 @@ import 'package:homeassist/base/pages/login_page.dart';
 import 'package:homeassist/base/pages/new_user_signup.dart';
 import 'package:homeassist/base/pages/signin_page.dart';
 import 'package:homeassist/base/pages/splash_screen.dart';
-import 'package:homeassist/base/services_screens/bathroom_cleaning_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+final GlobalKey<MaterialNavState> navKey = GlobalKey<MaterialNavState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const SplashPage(),
           '/login': (context) => const SigninPage(),
           '/edit': (context) => const NewUserSignup(),
-          '/home': (context) => const MaterialNav(),
+          '/home': (context) => MaterialNav(),
         });
   }
 }

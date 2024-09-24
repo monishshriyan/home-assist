@@ -1,26 +1,23 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:homeassist/base/constants.dart';
-import 'package:homeassist/base/components/db_model.dart';
+import 'package:homeassist/main.dart';
 import 'package:intl/intl.dart';
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+import 'package:supabase_flutter/supabase_flutter.dart';
+class PlumberScreen extends StatefulWidget {
+  const PlumberScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => SearchScreenState();
+  State<PlumberScreen> createState() => _PlumberScreenState();
 }
 
-class SearchScreenState extends State<SearchScreen> {
-  List<ServiceModel> allservices = [];
-  List<ServiceModel> filteredServices = [];
-  final SupabaseClient supabase = Supabase.instance.client;
-  TextEditingController searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  final ScrollController _scrollController = ScrollController();
-
+class _PlumberScreenState extends State<PlumberScreen> {
+  final _future = Supabase.instance.client
+      .from('service_providers')
+      .select(
+          'id, service_type_id, image_url, provider_name, description, rating, starting_price')
+      .eq('service_type_id', '143ebafd-fd06-4e32-a2ac-5bbc86c074fa')
+      .eq('is_booked', false);
   Future<void> _bookServiceProvider(
        String serviceProviderId,DateTime selectedDate, String serviceId) async {
     final user = Supabase.instance.client.auth.currentUser;
@@ -68,145 +65,61 @@ class SearchScreenState extends State<SearchScreen> {
   }
   return true;
   }
-  
-  Future<List<ServiceModel>> _fetchServices() async {
-    //print("Fetching services...");  
-    final response = await supabase
-        .from('service_providers')
-        .select(); 
-    //print("Database response: $response");
-
-    if (response is List<dynamic>) {
-      // Map the response to your model
-      List<ServiceModel> allservices = response
-          .map((item) =>ServiceModel.fromMap(item as Map<String, dynamic>))
-          .toList();
-      //print('Data fetched: $allservices');
-      return allservices;
-      
-    } else {
-      throw Exception('Failed to load services');
-      //print('failed to load services');
-    }
-  }
-
-  Future<void> _fetchData() async {
-    List<ServiceModel> services = await _fetchServices();
-    setState(() {
-      allservices = services;
-      filteredServices = services;
-    });
-  }
-
-  void _filterServices(String searchText) {
-    List<ServiceModel> filtered = allservices.where((service) {
-      final serviceName = service.serviceName.toLowerCase();
-      final providerName = service.providerName.toLowerCase();
-      final searchLower = searchText.toLowerCase();
-      
-      return serviceName.contains(searchLower) || providerName.contains(searchLower);
-    }).toList();
-
-    setState(() {
-      filteredServices = filtered;
-    });
-    //print('Filtered services: $filteredServices');
-  }
-
-  @override
-  void initState() {
-    _fetchData();
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    FocusScope.of(context).requestFocus(_focusNode);
-  });
-    searchController.addListener((){
-      _filterServices(searchController.text);
-    });
-    _scrollController.addListener(() {
-      // Unfocus the TextField when scrolling
-      if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-        _focusNode.unfocus();
-      }
-    });
-
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    searchController.dispose();
-     _scrollController.dispose();
-    super.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.backgroundWhite,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child:  CustomScrollView(
-            controller: _scrollController,
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: ValueConstants.containerMargin,
-                          vertical: 18.0),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.navBackground,
-                         border: Border.all(
-                          color: ColorConstants.navLabelHighlight, width: 1),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                focusNode: _focusNode,
-                                controller: searchController,
-                                // onChanged: (value) => _filterServices(value),
-                                decoration: const InputDecoration(
-                                  hintText: 'Find Services',
-                                  hintStyle: TextStyle(color: Colors.black,fontSize: 18),
-                                  prefixIcon: Icon(Icons.search, color: Colors.black,size: 25,),
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.black,),
-                              onPressed: () {
-                                searchController.clear();
-                                _filterServices('');
-                              },)
-                          ],
-                        ),
-                      ),
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No data available'));
+          } else {
+            final services = snapshot.data as List<Map<String, dynamic>>;
+            return CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15)),
+                  ),
+                  expandedHeight: 200.0,
+                  floating: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(
+                      'Plumber',
+                      style: TextStyle(
+                          color: ColorConstants.textDarkGreen, fontSize: 28),
                     ),
-                     filteredServices.isEmpty? const SliverToBoxAdapter(
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Text(
-                            'No results found',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                :
-                    SliverList(
+                  ),
+                  backgroundColor: ColorConstants.navBackground,
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: ValueConstants.containerMargin,
+                      vertical: ValueConstants.containerMargin),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(30)),
+                    child: Image.asset(
+                      width: 50,
+                      height: 200,
+                      "images/bathroom-clean.webp",
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                )),
+                SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final service = filteredServices[index];
+                      final service = services[index];
                       return Card(
                         elevation: 0,
                         margin: const EdgeInsets.all(10),
@@ -217,13 +130,11 @@ class SearchScreenState extends State<SearchScreen> {
                               // Image
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  service.imgUrl
-                                      .toString(), // placeholder image
+                                  service['image_url'] ?? '',
                                 ),
                                 radius: 30,
                               ),
-                              const SizedBox(
-                                  width: 10), // Space between image and text
+                              const SizedBox(width: 10),
 
                               // Title and subtitle
                               Expanded(
@@ -232,15 +143,11 @@ class SearchScreenState extends State<SearchScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      service.providerName.toString(),
+                                      service['provider_name'] ?? '',
                                       style: headerServiceProviderTextStyle,
                                     ),
-                                    Text(
-                                      service.serviceName.toString(),
-                                      style: subheaderServiceProviderTextStyle,
-                                    ),
-                                    Text(service.description),
-                                    Text('✦ ${service.rating.toString()}'),
+                                    Text(service['description'] ?? ''),
+                                    Text('✦ ${service['rating'] ?? 'N/A'}'),
                                   ],
                                 ),
                               ),
@@ -253,10 +160,10 @@ class SearchScreenState extends State<SearchScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           ColorConstants.darkSlateGrey,
-                                      elevation: 0.1, // Remove elevation
+                                      elevation: 0.1,
                                     ),
-                                    onPressed: () async{
-                                      // Add your booking logic here
+                                    onPressed: () async {
+                                       // Add your booking logic here
                                        DateTime today = DateTime.now();
                                         DateTime? selectedDate = await showDatePicker(
                                           context: context,
@@ -289,8 +196,8 @@ class SearchScreenState extends State<SearchScreen> {
                                         if (selectedDate != null) {
                                       // Step 2: Insert booking into Supabase
                                       // Assuming you have access to providerId and userId
-                                      String providerId = service.id;  // Provider ID from the current service
-                                      String serviceId = service.service_id;
+                                      String providerId = service['id'];  // Provider ID from the current service
+                                      String serviceId = service['service_type_id'];
                                       final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
                                       String userId = user!.id;
                                       bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
@@ -365,7 +272,7 @@ class SearchScreenState extends State<SearchScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'from ₹${service.price.toString()}',
+                                    'from ₹${service['starting_price'] ?? 'N/A'}',
                                     style: TextStyle(
                                         color: ColorConstants.textLightGrey),
                                   ),
@@ -376,13 +283,14 @@ class SearchScreenState extends State<SearchScreen> {
                         ),
                       );
                     },
-                    childCount: filteredServices.length,
+                    childCount: services.length,
                   ),
                 ),
-            ],
-          ),
-        )
-      )
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 }

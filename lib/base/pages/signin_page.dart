@@ -111,7 +111,7 @@ class _SigninPageState extends State<SigninPage> {
         if (session != null) {
           _redirecting = true;
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MaterialNav()),
+            MaterialPageRoute(builder: (context) =>  MaterialNav()),
           );
         }
       },

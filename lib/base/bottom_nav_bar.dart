@@ -5,15 +5,15 @@ import 'package:homeassist/base/bookings_screen.dart';
 import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/search_screen.dart';
+import 'package:homeassist/main.dart';
 
 class MaterialNav extends StatefulWidget {
-  const MaterialNav({super.key});
-
+  MaterialNav({Key? key}) : super(key: navKey);
   @override
-  State<MaterialNav> createState() => _MaterialNavState();
+  State<MaterialNav> createState() => MaterialNavState();
 }
 
-class _MaterialNavState extends State<MaterialNav> {
+class MaterialNavState extends State<MaterialNav> {
   int index = 0;
 
   final screens = [
@@ -22,6 +22,15 @@ class _MaterialNavState extends State<MaterialNav> {
     const BookingsScreen(),
     const AccountScreen(),
   ];
+
+  // Method to update the index programmatically
+  void updateIndex(int newIndex) {
+    setState(() {
+      index = newIndex;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
