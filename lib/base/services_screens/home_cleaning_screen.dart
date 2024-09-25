@@ -16,11 +16,12 @@ class _HomeCleaningScreenState extends State<HomeCleaningScreen> {
 final _future = Supabase.instance.client
       .from('service_providers')
       .select(
-          'id, service_type_id, image_url, provider_name, description, rating, starting_price')
+          'id, service_type_id, image_url, provider_name, description, rating, starting_price,provider_number')
       .eq('service_type_id', '11a2e6ce-77ca-42b2-826f-bd23183f7309')
       .eq('is_booked', false);
   Future<void> _bookServiceProvider(
-       String serviceProviderId,DateTime selectedDate, String serviceId) async {
+       String serviceProviderId,DateTime selectedDate, String serviceId, String providerNumber) async {
+    final timeNow = DateFormat('HH:mm:ss').format(DateTime.now());
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
       Fluttertoast.showToast(
@@ -38,7 +39,10 @@ final _future = Supabase.instance.client
       'service_id': serviceId,
       'booking_date': DateTime.now().toIso8601String(),
       'booked_for': selectedDate.toIso8601String(),
+      'booking_time': timeNow,
+      'provider_number': providerNumber,
     });}
+
 
   Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
 
@@ -199,6 +203,7 @@ final _future = Supabase.instance.client
                                       // Assuming you have access to providerId and userId
                                       String providerId = service['id'];  // Provider ID from the current service
                                       String serviceId = service['service_type_id'];
+                                      String providerNumber = service['provider_number'] ?? '';
                                       final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
                                       String userId = user!.id;
                                       bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
@@ -229,7 +234,7 @@ final _future = Supabase.instance.client
                                         );
                                       }
                                       else {
-                                      await _bookServiceProvider(providerId, selectedDate, serviceId);
+                                      await _bookServiceProvider(providerId, selectedDate, serviceId, providerNumber);
                                       
                                       String formattedDate = DateFormat('dd MMMM').format(selectedDate);
 

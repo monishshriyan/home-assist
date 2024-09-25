@@ -22,7 +22,8 @@ class SearchScreenState extends State<SearchScreen> {
   final ScrollController _scrollController = ScrollController();
 
   Future<void> _bookServiceProvider(
-       String serviceProviderId,DateTime selectedDate, String serviceId) async {
+       String serviceProviderId,DateTime selectedDate, String serviceId, String providerNumber) async {
+    final timeNow = DateFormat('HH:mm:ss').format(DateTime.now());
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
       Fluttertoast.showToast(
@@ -40,6 +41,8 @@ class SearchScreenState extends State<SearchScreen> {
       'service_id': serviceId,
       'booking_date': DateTime.now().toIso8601String(),
       'booked_for': selectedDate.toIso8601String(),
+      'booking_time': timeNow,
+      'provider_number': providerNumber,
     });}
 
   Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
@@ -81,7 +84,7 @@ class SearchScreenState extends State<SearchScreen> {
       List<ServiceModel> allservices = response
           .map((item) =>ServiceModel.fromMap(item as Map<String, dynamic>))
           .toList();
-      //print('Data fetched: $allservices');
+      print('Data fetched: $allservices');
       return allservices;
       
     } else {
@@ -291,6 +294,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       // Assuming you have access to providerId and userId
                                       String providerId = service.id;  // Provider ID from the current service
                                       String serviceId = service.service_id;
+                                      String providerNumber = service.providerNumber ?? '';
                                       final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
                                       String userId = user!.id;
                                       bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
@@ -321,7 +325,7 @@ class SearchScreenState extends State<SearchScreen> {
                                         );
                                       }
                                       else {
-                                      await _bookServiceProvider(providerId, selectedDate, serviceId);
+                                      await _bookServiceProvider(providerId, selectedDate, serviceId, providerNumber);
                                       
                                       String formattedDate = DateFormat('dd MMMM').format(selectedDate);
 
