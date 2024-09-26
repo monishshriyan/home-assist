@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/pages/signup_page_edit.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
@@ -31,7 +32,7 @@ class _NewUserSignupState extends State<NewUserSignup> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Check your email for a login link!')),
+          const SnackBar(content: Text('Check your email for a login link!')),
         );
 
         _emailController.clear();
@@ -45,7 +46,7 @@ class _NewUserSignupState extends State<NewUserSignup> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Unexpected error occurred'),
             backgroundColor: Colors.red,
           ),
@@ -80,7 +81,7 @@ class _NewUserSignupState extends State<NewUserSignup> {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red,
             ),
@@ -105,16 +106,21 @@ class _NewUserSignupState extends State<NewUserSignup> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         children: [
-          const Text('Sign Up with your email below'),
+          const Text('Sign Up with your email below', style: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),),
           const SizedBox(height: 18),
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: const InputDecoration(labelText: 'Email',
+                  hintText: 'Enter your email',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))),
           ),
           const SizedBox(height: 18),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
             onPressed: _isLoading ? null : _signIn,
-            child: Text(_isLoading ? 'Sending...' : 'Send Sign up Link'),
+            child: Text(_isLoading ? 'Sending...' : 'Send Sign up Link',style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

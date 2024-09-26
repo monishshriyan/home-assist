@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
 import 'package:homeassist/base/components/avatar.dart';
+import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,8 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   late final TextEditingController _fullNameController =
       TextEditingController();
   late final TextEditingController _addressController = TextEditingController();
-  late final TextEditingController _phoneNumberController =
-      TextEditingController();
+  late final TextEditingController _phoneNumberController = TextEditingController();
 
   String? _avatarUrl;
   var _loading = true;
@@ -44,7 +43,7 @@ class _SignupPageState extends State<SignupPage> {
           address.isEmpty ||
           phoneNumber.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Please fill in all fields'),
             backgroundColor: Colors.red,
           ),
@@ -72,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
         await supabase.from('profiles').upsert(updates);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Successfully updated profile!')),
+            const SnackBar(content: Text('Successfully updated profile!')),
           );
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -82,15 +81,28 @@ class _SignupPageState extends State<SignupPage> {
         }
       }
     } on PostgrestException catch (error) {
-      if (mounted) {
+      if(error.code== '23514'){
+        if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter correct details!'), // User-friendly message
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    }
+    else {
+      if(mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.message), backgroundColor: Colors.red),
         );
       }
-    } catch (error) {
+    }
+  } 
+    catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Unexpected error occurred'),
             backgroundColor: Colors.red,
           ),
@@ -117,7 +129,7 @@ class _SignupPageState extends State<SignupPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Updated your profile image and email!')),
+          const SnackBar(content: Text('Updated your profile image and email!')),
         );
       }
     } on PostgrestException catch (error) {
@@ -129,7 +141,7 @@ class _SignupPageState extends State<SignupPage> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );
@@ -159,7 +171,7 @@ class _SignupPageState extends State<SignupPage> {
       appBar: AppBar(
         title: const Text('Sign Up'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -175,8 +187,9 @@ class _SignupPageState extends State<SignupPage> {
               const Text(
                 'Create a new account',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 5, 21, 2)),
               ),
+              const SizedBox(height: 12),
               Avatar(
                 imageUrl: _avatarUrl,
                 onUpload: _onUpload,
@@ -188,6 +201,9 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: const InputDecoration(
                   labelText: 'Username',
                   hintText: 'Enter your username',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -197,6 +213,9 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: const InputDecoration(
                   labelText: 'Full Name',
                   hintText: 'Enter your full name',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -205,6 +224,9 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: const InputDecoration(
                   labelText: 'Address',
                   hintText: 'Enter your address',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -219,12 +241,16 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: const InputDecoration(
                   labelText: 'Phone Number',
                   hintText: 'Enter your phone number',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
                 onPressed: _isLoading ? null : _updateProfile,
-                child: Text(_isLoading ? 'Updating...' : 'Update Profile'),
+                child: Text(_isLoading ? 'Updating...' : 'Update Profile',style: const TextStyle(color: Colors.white,)),
               ),
               const SizedBox(height: 12),
             ],

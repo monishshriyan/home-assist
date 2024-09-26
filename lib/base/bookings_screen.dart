@@ -77,17 +77,17 @@ class _BookingsScreenState extends State<BookingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.hourglass_empty, 
-                      size: 100,             
-                      color: Colors.grey,    
-                    ),
-                    SizedBox(height: 20),    
+                      Icons.clear_all_rounded, 
+                      size: 150,             
+                      color: Colors.black54,    
+                    ),    
                     Text(
-                      'No bookings Currently!',
+                      'No bookings Scheduled Currently!',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 24,        
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,  
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,  
                       ),
                     ),
                   ],

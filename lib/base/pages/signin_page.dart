@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
+import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/pages/new_user_signup.dart';
-import 'package:homeassist/base/pages/signup_page_edit.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -36,7 +35,7 @@ class _SigninPageState extends State<SigninPage> {
         // If the user doesn't exist, show an error message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text(
                   'No account found with this email. Please sign up first.'),
               backgroundColor: Colors.red,
@@ -57,7 +56,7 @@ class _SigninPageState extends State<SigninPage> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Check your email for a login link!')),
+          const SnackBar(content: Text('Check your email for a login link!')),
         );
 
         _emailController.clear();
@@ -71,7 +70,7 @@ class _SigninPageState extends State<SigninPage> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Unexpected error occurred'),
             backgroundColor: Colors.red,
           ),
@@ -122,7 +121,7 @@ class _SigninPageState extends State<SigninPage> {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
                 content: Text('Unexpected error occurred'),
                 backgroundColor: Colors.red),
           );
@@ -146,7 +145,7 @@ class _SigninPageState extends State<SigninPage> {
   void _navigateToSignUp() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NewUserSignup()),
+      MaterialPageRoute(builder: (context) => const NewUserSignup()),
     );
   }
 
@@ -166,24 +165,32 @@ class _SigninPageState extends State<SigninPage> {
               const Text(
                 'Sign in to your account',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold ,color: Color.fromARGB(255, 5, 21, 2)),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 validator: ValidationBuilder().email().maxLength(50).build(),
                 controller: _emailController,
+                cursorColor: ColorConstants.navBackground,
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
                 onPressed: _isLoading ? null : _signIn,
-                child: Text(_isLoading ? 'Sending...' : 'Send Login Link'),
+                child: Text(_isLoading ? 'Sending...' : 'Send Login Link',style: const TextStyle(color: Colors.white,),),
               ),
               const SizedBox(height: 12),
               TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: ColorConstants.deepGreenAccent,
+                ),
                 onPressed: _navigateToSignUp,
                 child: const Text('Don\'t have an account? Sign up'),
               ),

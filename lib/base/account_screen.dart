@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:homeassist/base/constants.dart';
+import 'package:homeassist/base/pages/account_page.dart';
+import 'package:homeassist/base/pages/booking_history.dart';
+import 'package:homeassist/base/pages/manage_address.dart';
+import 'package:homeassist/base/pages/settings_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -13,6 +16,8 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   String _username = '';
   String _avatarUrl = '';
+  String _phoneNumber = '';
+ 
 
   @override
   void initState() {
@@ -21,41 +26,28 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> _loadUserData() async {
-    await _fetchUsername(); // Load Username
-    await _fetchAvatarUrl(); // Load Avatar URL
-  }
-
-  String? _getCurrentUserId() {
-    final user = Supabase.instance.client.auth.currentUser;
-    return user?.id;
-  }
-
-  Future<void> _fetchUsername() async {
-    final userId = _getCurrentUserId();
-    if (userId != null) {
+    final user = Supabase.instance.client.auth.currentUser; // Fetch the current user
+  if (user != null) {
+    final userId = user.id;
+    try{
       final response = await Supabase.instance.client
           .from('profiles')
-          .select('username')
-          .eq('id', userId)
-          .single();
-    }
-  }
-
-  Future<void> _fetchAvatarUrl() async {
-    final userId = _getCurrentUserId();
-    if (userId != null) {
-      final response = await Supabase.instance.client
-          .from('profiles')
-          .select('avatar_url')
+          .select('*')
           .eq('id', userId)
           .single();
 
-      final avatarUrl = response['avatar_url'] as String;
-
-      setState(() {
-        _avatarUrl = avatarUrl;
-      });
+      if (response != null) {
+        setState(() {
+          _username = response['username'] ?? 'Unknown User';
+          _avatarUrl = response['avatar_url'] ?? '';
+          _phoneNumber = response['phone_number'] ?? 'No Phone Number Provided';
+        });
+      }
     }
+    catch (e) {
+  print('Error fetching user data: $e');
+  }
+  }
   }
 
   Future<void> _signOut() async {
@@ -73,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );
@@ -81,11 +73,46 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  static const double _sizedBoxHeight = 25;
+  void _showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to Logout?'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: ColorConstants.deepGreenAccent,
+              textStyle: const TextStyle(
+              fontSize: 18, 
+              ),
+              ),
+            child: const Text('Discard'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: ColorConstants.deepGreenAccent,
+              textStyle: const TextStyle(
+              fontSize: 18, 
+              ),
+              ),
+            child: const Text('Logout'),
+            onPressed: () {
+              Navigator.pop(context);
+              _signOut();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+
   static const double _sizedBoxWidth = 10;
-  static const double _iconSize = 32;
-  static const double _fontSize = 26;
-  static const double _listGap = 10;
+  static const double _iconSize = 30;
+  static const double _fontSize = 24;
+  static const double _listGap = 15;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +124,7 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Text(
               'Account',
               style:
-                  TextStyle(color: ColorConstants.textDarkGreen, fontSize: 32),
+                  TextStyle(color: ColorConstants.textDarkGreen, fontSize: 26),
             ),
           ),
           actions: [
@@ -106,10 +133,14 @@ class _AccountScreenState extends State<AccountScreen> {
               child: IconButton(
                 icon: const Icon(
                   Icons.mode_edit_outlined,
-                  size: 32,
+                  size: 30,
                 ), // This will add an edit icon on the right side
                 onPressed: () {
-                  // You can add a callback here to handle the edit button press
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AccountPage()),
+                    );
                 },
               ),
             ),
@@ -123,7 +154,8 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Column(
               children: [
                 const SizedBox(
-                  height: _sizedBoxHeight,
+                  //height: _sizedBoxHeight,
+                  height: 10,                
                 ),
                 //Profile Info
                 Container(
@@ -143,141 +175,252 @@ class _AccountScreenState extends State<AccountScreen> {
                           const SizedBox(
                             width: 18,
                           ),
-                          Transform.translate(
-                            offset: const Offset(0, -10),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _username,
-                                    style: TextStyle(
-                                        color: ColorConstants.textDarkGreen,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.w900),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "+91 7206942069",
-                                    style: TextStyle(
-                                        color: ColorConstants.textLightGrey,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w900),
-                                  ),
-                                  const SizedBox(height: 18),
-                                  TextButton(
-                                    onPressed: _signOut,
-                                    child: const Text('Sign Out'),
-                                  ),
-                                ]),
-                          ),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _username,
+                                  style: TextStyle(
+                                      color: ColorConstants.textDarkGreen,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  '+91 $_phoneNumber',
+                                  style: TextStyle(
+                                      color: ColorConstants.textLightGrey,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                                const SizedBox(height: 18),
+                                
+                              ]),
                         ])),
 
                 const Divider(
                   thickness: 15,
                   height: 60,
-                  color: Color.fromARGB(147, 227, 227, 227),
+                  color: Color.fromARGB(43, 184, 229, 233),
                 ),
 
                 ListView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: ValueConstants.containerMargin),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.wallet,
-                                    size: _iconSize,
-                                  ),
-                                  SizedBox(
-                                    width: _sizedBoxWidth,
-                                  ),
-                                  Text(
-                                    'Wallet',
-                                    style: TextStyle(fontSize: _fontSize),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(Icons.chevron_right),
-                                ],
-                              ),
-                            ],
-                          )),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ManageAddress()),
+                        );
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: ValueConstants.containerMargin),
+                            padding: const EdgeInsets.only(top: 5), // Add padding to make the area bigger
+                              decoration: const BoxDecoration(
+                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: _iconSize,
+                                    ),
+                                    SizedBox(
+                                      width: _sizedBoxWidth,
+                                    ),
+                                    Text(
+                                      'Manage addresses',
+                                      style: TextStyle(fontSize: _fontSize),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.chevron_right,
+                                    size: 28),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      ),
 
                       const SizedBox(
                         height: _listGap,
                       ),
                       //second row
-                      Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: ValueConstants.containerMargin),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.home_filled,
-                                    size: _iconSize,
-                                  ),
-                                  SizedBox(
-                                    width: _sizedBoxWidth,
-                                  ),
-                                  Text(
-                                    'Address',
-                                    style: TextStyle(fontSize: _fontSize),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(Icons.chevron_right),
-                                ],
-                              ),
-                            ],
-                          )),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const BookingHistory()),
+                        );
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: ValueConstants.containerMargin),
+                              decoration: const BoxDecoration(
+                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.event_available_rounded,
+                                      size: _iconSize,
+                                    ),
+                                    SizedBox(
+                                      width: _sizedBoxWidth,
+                                    ),
+                                    Text(
+                                      'Booking history',
+                                      style: TextStyle(fontSize: _fontSize),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.chevron_right,
+                                    size: 28),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      ),
 
                       const SizedBox(
                         height: _listGap,
                       ),
                       //third row
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SettingsScreen()),
+                        );
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: ValueConstants.containerMargin),
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.settings,
+                                      size: _iconSize,
+                                    ),
+                                    SizedBox(
+                                      width: _sizedBoxWidth,
+                                    ),
+                                    Text(
+                                      'Settings',
+                                      style: TextStyle(fontSize: _fontSize),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.chevron_right,
+                                    size: 28,),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      ),
+                          const SizedBox(
+                        height: _listGap,
+                      ),
+                      //fourth row
                       Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: ValueConstants.containerMargin),
+                          decoration: const BoxDecoration(
+                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            ),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
                                   Icon(
-                                    Icons.location_pin,
+                                    Icons.headset_mic,
                                     size: _iconSize,
                                   ),
                                   SizedBox(
                                     width: _sizedBoxWidth,
                                   ),
                                   Text(
-                                    'Location',
+                                    'Support',
                                     style: TextStyle(fontSize: _fontSize),
                                   ),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Icon(Icons.chevron_right),
+                                  Icon(Icons.chevron_right,
+                                  size: 28,),
                                 ],
                               ),
                             ],
-                          ))
+                          )),
+                          const SizedBox(
+                        height: _listGap,
+                      ),
+                      //fifth row
+                      GestureDetector(
+                        onTap: () {
+                          _showLogoutConfirmation();
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: ValueConstants.containerMargin),
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.logout_rounded,
+                                      size: _iconSize,
+                                    ),
+                                    SizedBox(
+                                      width: _sizedBoxWidth,
+                                    ),
+                                    Text(
+                                      'Logout',
+                                      style: TextStyle(fontSize: _fontSize),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.chevron_right,
+                                    size: 28,),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      )
                     ])
               ],
             ),

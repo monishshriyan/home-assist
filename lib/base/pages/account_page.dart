@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/components/avatar.dart';
+import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/pages/login_page.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,7 +15,8 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final _usernameController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
 
   String? _avatarUrl;
   var _loading = true;
@@ -29,7 +32,8 @@ class _AccountPageState extends State<AccountPage> {
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
       _usernameController.text = (data['username'] ?? '') as String;
-      _addressController.text = (data['address'] ?? '') as String;
+      _fullNameController.text = (data['full_name'] ?? '') as String;
+      _phoneNumberController.text = (data['phone_number']?? '') as String;
       _avatarUrl = (data['avatar_url'] ?? '') as String;
     } on PostgrestException catch (error) {
       if (mounted) {
@@ -40,7 +44,7 @@ class _AccountPageState extends State<AccountPage> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );
@@ -60,23 +64,24 @@ class _AccountPageState extends State<AccountPage> {
       _loading = true;
     });
     final userName = _usernameController.text.trim();
-    final address = _addressController.text.trim();
+    final fullName = _fullNameController.text.trim();
+    final phoneNumber = _phoneNumberController.text.trim();
     final user = supabase.auth.currentUser;
     final updates = {
       'id': user!.id,
       'username': userName,
-      'address': address,
+      'full_name': fullName,
+      'phone_number': phoneNumber,
       'updated_at': DateTime.now().toIso8601String(),
-      'is_profile_complete': 'TRUE',
     };
     try {
       await supabase.from('profiles').upsert(updates);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Successfully updated profile!')),
+          const SnackBar(content: Text('Successfully updated profile!')),
         );
-        Navigator.of(context).pushReplacementNamed(
-            '/home'); // Navigate to home after profile update
+        // Navigator.of(context).pushReplacementNamed(
+        //     '/home'); // Navigate to home after profile update
       }
     } on PostgrestException catch (error) {
       if (mounted) {
@@ -87,7 +92,7 @@ class _AccountPageState extends State<AccountPage> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );
@@ -101,31 +106,6 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  Future<void> _signOut() async {
-    try {
-      await supabase.auth.signOut();
-    } on AuthException catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message), backgroundColor: Colors.red),
-        );
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Unexpected error occurred'),
-              backgroundColor: Colors.red),
-        );
-      }
-    } finally {
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginPage()),
-        );
-      }
-    }
-  }
 
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
@@ -137,7 +117,7 @@ class _AccountPageState extends State<AccountPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Updated your profile image!')),
+          const SnackBar(content: Text('Updated your profile image!')),
         );
       }
     } on PostgrestException catch (error) {
@@ -149,7 +129,7 @@ class _AccountPageState extends State<AccountPage> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );
@@ -173,7 +153,8 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _addressController.dispose();
+    _fullNameController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -190,21 +171,44 @@ class _AccountPageState extends State<AccountPage> {
           ),
           const SizedBox(height: 18),
           TextFormField(
+            validator: ValidationBuilder().minLength(4).build(),
             controller: _usernameController,
-            decoration: const InputDecoration(labelText: 'User Name'),
+            decoration: const InputDecoration(labelText: 'User Name',
+            labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))
+            ),
           ),
           const SizedBox(height: 18),
           TextFormField(
-            controller: _addressController,
-            decoration: const InputDecoration(labelText: 'Address'),
+            validator: ValidationBuilder().minLength(4).build(),
+            controller: _fullNameController,
+            decoration: const InputDecoration(labelText: 'Full Name',
+            labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))
+            ),
           ),
           const SizedBox(height: 18),
+          TextFormField(
+            validator: ValidationBuilder()
+                    .phone()
+                    .minLength(10)
+                    .maxLength(10)
+                    .build(),
+            controller: _phoneNumberController,
+            decoration: const InputDecoration(labelText: 'Phone Number',
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))),
+          ),
+          const SizedBox(height: 30),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
             onPressed: _loading ? null : _updateProfile,
-            child: Text(_loading ? 'Saving...' : 'Update'),
+            child: Text(_loading ? 'Saving...' : 'Update',style: const TextStyle(color: Colors.white,fontSize: 18)),
           ),
           const SizedBox(height: 18),
-          TextButton(onPressed: _signOut, child: const Text('Sign Out')),
         ],
       ),
     );
