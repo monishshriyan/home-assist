@@ -20,7 +20,7 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
       .eq('service_type_id', '1b4708ad-c585-442a-80fe-86c5ce6bc0e8')
       .eq('is_booked', false);
  Future<void> _bookServiceProvider(
-       String serviceProviderId,DateTime selectedDate, String serviceId, String providerNumber) async {
+       String serviceProviderId,DateTime selectedDate, String serviceId,) async {
     final timeNow = DateFormat('HH:mm:ss').format(DateTime.now());
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
@@ -40,7 +40,6 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
       'booking_date': DateTime.now().toIso8601String(),
       'booked_for': selectedDate.toIso8601String(),
       'booking_time': timeNow,
-      'provider_number': providerNumber,
     });}
 
   Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
@@ -56,13 +55,14 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
     for (var booking in response) {
       String bookedUserId = booking['user_id'];
       DateTime bookedForDate = DateTime.parse(booking['booked_for']);
+      bool isAvailable = booking['is_available'] ?? false;
       // Check if the user has already booked the provider on the same date
       if (bookedUserId == userId && DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
         // User has already booked the provider for this date
         return false;
       } 
       // Check if the provider is already booked by someone else for the same date
-      else if (bookedUserId != userId) {
+      else if (bookedUserId != userId && !isAvailable) {
         return false;
       }
     }
@@ -174,6 +174,7 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                           initialDate: today,
                                           firstDate: today,
                                           lastDate: today.add(const Duration(days: 5)),
+                                          initialEntryMode: DatePickerEntryMode.calendarOnly,
                                           builder: (BuildContext context, Widget? child) {
                                             return Theme(
                                               data: ThemeData.light().copyWith(
@@ -202,7 +203,6 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                       // Assuming you have access to providerId and userId
                                       String providerId = service['id'];  // Provider ID from the current service
                                       String serviceId = service['service_type_id'];
-                                      String providerNumber = service['provider_number'] ?? '';
                                       final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
                                       String userId = user!.id;
                                       bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
@@ -212,8 +212,8 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: const Text('Booking Unavailable'),
-                                              content: const Text('Provider currently not available for selected date, choose another date'),
+                                              title: const Text('Booking Unavailable',textAlign: TextAlign.center,),
+                                              content: const Text('Provider currently not available\nchoose another dateor wait for some time.'),
                                               actions: <Widget>[
                                                 Center(
                                                   child: ElevatedButton(
@@ -233,7 +233,7 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                         );
                                       }
                                       else {
-                                      await _bookServiceProvider(providerId, selectedDate, serviceId, providerNumber);
+                                      await _bookServiceProvider(providerId, selectedDate, serviceId);
                                       
                                       String formattedDate = DateFormat('dd MMMM').format(selectedDate);
 
@@ -247,8 +247,8 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: const Text('Booking Successful!'),
-                                              content: Text('Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.'),
+                                              title: const Text('Booking Successful!',textAlign: TextAlign.center,),
+                                              content: Text('Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.',textAlign:TextAlign.center,),
                                               actions: <Widget>[
                                                 Center(
                                                   child: ElevatedButton(

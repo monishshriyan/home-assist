@@ -43,7 +43,6 @@ class SearchScreenState extends State<SearchScreen> {
       'booking_date': DateTime.now().toIso8601String(),
       'booked_for': selectedDate.toIso8601String(),
       'booking_time': timeNow,
-      'provider_number': providerNumber,
     });
   }
 
@@ -56,23 +55,22 @@ class SearchScreenState extends State<SearchScreen> {
         .eq('provider_id', serviceProviderId)
         .eq('booked_for', formattedDate);
 
-    if (response is List<dynamic>) {
-      for (var booking in response) {
-        String bookedUserId = booking['user_id'];
-        DateTime bookedForDate = DateTime.parse(booking['booked_for']);
-        // Check if the user has already booked the provider on the same date
-        if (bookedUserId == userId &&
-            DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
-          // User has already booked the provider for this date
-          return false;
-        }
-        // Check if the provider is already booked by someone else for the same date
-        else if (bookedUserId != userId) {
-          return false;
-        }
+    for (var booking in response) {
+      String bookedUserId = booking['user_id'];
+      DateTime bookedForDate = DateTime.parse(booking['booked_for']);
+      bool isAvailable = booking['is_available'] ?? false;
+      // Check if the user has already booked the provider on the same date
+      if (bookedUserId == userId &&
+          DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
+        // User has already booked the provider for this date
+        return false;
+      }
+      // Check if the provider is already booked by someone else for the same date
+      else if (bookedUserId != userId && !isAvailable) {
+        return false;
       }
     }
-    return true;
+      return true;
   }
 
   Future<List<ServiceModel>> _fetchServices() async {
@@ -85,7 +83,7 @@ class SearchScreenState extends State<SearchScreen> {
       List<ServiceModel> allservices = response
           .map((item) => ServiceModel.fromMap(item as Map<String, dynamic>))
           .toList();
-      print('Data fetched: $allservices');
+      //print('Data fetched: $allservices');
       return allservices;
     } else {
       throw Exception('Failed to load services');
@@ -315,6 +313,7 @@ class SearchScreenState extends State<SearchScreen> {
                                                 child: child!,
                                               );
                                             },
+                                            initialEntryMode: DatePickerEntryMode.calendarOnly
                                           );
                                           if (selectedDate != null) {
                                             // Step 2: Insert booking into Supabase
@@ -344,9 +343,9 @@ class SearchScreenState extends State<SearchScreen> {
                                                     (BuildContext context) {
                                                   return AlertDialog(
                                                     title: const Text(
-                                                        'Booking Unavailable'),
+                                                        'Booking Unavailable',textAlign: TextAlign.center,),
                                                     content: const Text(
-                                                        'Provider currently not available for selected date, choose another date'),
+                                                        'Provider currently not available\n choose another date or wait for some time.',textAlign: TextAlign.center,),
                                                     actions: <Widget>[
                                                       Center(
                                                         child: ElevatedButton(
@@ -395,9 +394,9 @@ class SearchScreenState extends State<SearchScreen> {
                                                     (BuildContext context) {
                                                   return AlertDialog(
                                                     title: const Text(
-                                                        'Booking Successful!'),
+                                                        'Booking Successful!',textAlign: TextAlign.center,),
                                                     content: Text(
-                                                        'Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.'),
+                                                        'Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.',textAlign: TextAlign.center,),
                                                     actions: <Widget>[
                                                       Center(
                                                         child: ElevatedButton(

@@ -28,7 +28,7 @@ class _BookingHistoryState extends State<BookingHistory> {
 
     final response = await Supabase.instance.client
         .from('bookings')
-        .select('*, service_providers(provider_name, image_url), service_types(service_type)')
+        .select('*, service_providers(provider_name, image_url,provider_number), service_types(service_type)')
         .eq('user_id', user.id)
         .eq('is_completed', true);
 
@@ -67,7 +67,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                           color: ColorConstants.textDarkGreen, fontSize: 28),
                     ),
                   ),
-                  backgroundColor: ColorConstants.navBackground,
+                  //backgroundColor: ColorConstants.navBackground,
                 ),
                  if (bookings.isEmpty) 
                   const SliverToBoxAdapter(
@@ -156,7 +156,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                                         const SizedBox(height: 4),
                                         GestureDetector(
                                           onTap: () async {
-                                            final phoneNumber = booking['provider_number'];
+                                            final phoneNumber = provider['provider_number'];
                                             if (phoneNumber != null && phoneNumber.isNotEmpty) {
                                               final Uri launchUri = Uri(
                                                 scheme: 'tel',
@@ -180,7 +180,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                                             }
                                           },
                                           child: Text(
-                                            'Phone: ${booking['provider_number'] ?? 'Not Provided'}',
+                                            'Phone: ${provider['provider_number'] ?? 'Not Provided'}',
                                             style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.black54,

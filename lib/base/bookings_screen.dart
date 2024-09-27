@@ -30,7 +30,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
     final response = await Supabase.instance.client
         .from('bookings')
         .select(
-            '*, service_providers(provider_name, image_url), service_types(service_type)')
+            '*, service_providers(provider_name, image_url, provider_number), service_types(service_type)')
         .eq('user_id', user.id)
         .eq('is_completed', false);
 
@@ -167,7 +167,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                         GestureDetector(
                                           onTap: () async {
                                             final phoneNumber =
-                                                booking['provider_number'];
+                                                provider['provider_number'];
                                             if (phoneNumber != null &&
                                                 phoneNumber.isNotEmpty) {
                                               final Uri launchUri = Uri(
@@ -197,7 +197,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                             }
                                           },
                                           child: Text(
-                                            'Phone: ${booking['provider_number'] ?? 'Not Provided'}',
+                                            'Phone: ${provider['provider_number'] ?? 'Not Provided'}',
                                             style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.black54,
@@ -288,7 +288,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                                       title: const Text(
                                                           'Service Cancelled'),
                                                       content: const Text(
-                                                          'The service has been cancelled. Please refresh the page.'),
+                                                          'The service has been cancelled Succesfully.'),
                                                       actions: <Widget>[
                                                         TextButton(
                                                           style: TextButton

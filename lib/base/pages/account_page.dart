@@ -18,6 +18,9 @@ class _AccountPageState extends State<AccountPage> {
   final _phoneNumberController = TextEditingController();
 
   String? _avatarUrl;
+  final String defaultAvatarUrl = supabase.storage
+  .from('avatars')
+  .getPublicUrl('avatars/pfp.png');
   var _loading = true;
 
   /// Called once a user id is received within `onAuthenticated()`
@@ -33,7 +36,7 @@ class _AccountPageState extends State<AccountPage> {
       _usernameController.text = (data['username'] ?? '') as String;
       _fullNameController.text = (data['full_name'] ?? '') as String;
       _phoneNumberController.text = (data['phone_number'] ?? '') as String;
-      _avatarUrl = (data['avatar_url'] ?? '') as String;
+      _avatarUrl = (data['avatar_url'] ?? defaultAvatarUrl) as String;
     } on PostgrestException catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,63 +166,67 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
-          color: Colors.white,
+          //color: Colors.white,
         ),
         title: const Text(
           'Edit Profile',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          // style: TextStyle(
+          //   color: Colors.white,
+          // ),
         ),
-        backgroundColor: ColorConstants.darkSlateGrey,
+        //backgroundColor: ColorConstants.darkSlateGrey,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Avatar(
-              imageUrl: _avatarUrl,
-              onUpload: _onUpload,
-            ),
-            const SizedBox(height: 32),
-            _buildTextFormField(
-              controller: _usernameController,
-              label: 'User Name',
-              validator: ValidationBuilder().minLength(4).build(),
-            ),
-            const SizedBox(height: 16),
-            _buildTextFormField(
-              controller: _fullNameController,
-              label: 'Full Name',
-              validator: ValidationBuilder().minLength(4).build(),
-            ),
-            const SizedBox(height: 16),
-            _buildTextFormField(
-              controller: _phoneNumberController,
-              label: 'Phone Number',
-              keyboardType: TextInputType.phone,
-              validator: ValidationBuilder().phone().minLength(10).build(),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _loading ? null : _updateProfile,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Avatar(
+                  imageUrl: _avatarUrl,
+                  onUpload: _onUpload,
                 ),
-                backgroundColor: ColorConstants.darkSlateGrey,
-              ),
-              child: Text(
-                _loading ? 'Saving...' : 'Update',
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(color: Colors.white),
-              ),
+                const SizedBox(height: 32),
+                _buildTextFormField(
+                  controller: _usernameController,
+                  label: 'User Name',
+                  validator: ValidationBuilder().minLength(4).build(),
+                ),
+                const SizedBox(height: 16),
+                _buildTextFormField(
+                  controller: _fullNameController,
+                  label: 'Full Name',
+                  validator: ValidationBuilder().minLength(4).build(),
+                ),
+                const SizedBox(height: 16),
+                _buildTextFormField(
+                  controller: _phoneNumberController,
+                  label: 'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  validator: ValidationBuilder().phone().minLength(10).build(),
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _loading ? null : _updateProfile,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16,),//horizontal: 35),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: ColorConstants.darkSlateGrey,
+                  ),
+                  child: Text(
+                    _loading ? 'Saving...' : 'Update',
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

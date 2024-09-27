@@ -16,11 +16,11 @@ class _PlumberScreenState extends State<PlumberScreen> {
   final _future = Supabase.instance.client
       .from('service_providers')
       .select(
-          'id, service_type_id, image_url, provider_name, description, rating, starting_price, provider_number')
+          'id, service_type_id, image_url, provider_name, description, rating, starting_price,provider_number')
       .eq('service_type_id', '143ebafd-fd06-4e32-a2ac-5bbc86c074fa')
       .eq('is_booked', false);
-  Future<void> _bookServiceProvider(String serviceProviderId,
-      DateTime selectedDate, String serviceId, String providerNumber) async {
+ Future<void> _bookServiceProvider(
+       String serviceProviderId,DateTime selectedDate, String serviceId,) async {
     final timeNow = DateFormat('HH:mm:ss').format(DateTime.now());
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
@@ -40,36 +40,34 @@ class _PlumberScreenState extends State<PlumberScreen> {
       'booking_date': DateTime.now().toIso8601String(),
       'booked_for': selectedDate.toIso8601String(),
       'booking_time': timeNow,
-      'provider_number': providerNumber,
-    });
-  }
+    });}
 
-  Future<bool> _isProviderAvailable(
-      String serviceProviderId, DateTime selectedDate, String userId) async {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-    final response = await supabase
-        .from('bookings')
-        .select()
-        .eq('provider_id', serviceProviderId)
-        .eq('booked_for', formattedDate);
+  Future<bool> _isProviderAvailable(String serviceProviderId,DateTime selectedDate, String userId) async {
 
-    if (response is List<dynamic>) {
-      for (var booking in response) {
-        String bookedUserId = booking['user_id'];
-        DateTime bookedForDate = DateTime.parse(booking['booked_for']);
-        // Check if the user has already booked the provider on the same date
-        if (bookedUserId == userId &&
-            DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
-          // User has already booked the provider for this date
-          return false;
-        }
-        // Check if the provider is already booked by someone else for the same date
-        else if (bookedUserId != userId) {
-          return false;
-        }
+  String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+  final response = await supabase
+      .from('bookings')
+      .select()
+      .eq('provider_id', serviceProviderId)
+      .eq('booked_for', formattedDate);
+
+  if (response is List<dynamic>) {
+    for (var booking in response) {
+      String bookedUserId = booking['user_id'];
+      DateTime bookedForDate = DateTime.parse(booking['booked_for']);
+      bool isAvailable = booking['is_available'] ?? false;
+      // Check if the user has already booked the provider on the same date
+      if (bookedUserId == userId && DateFormat('yyyy-MM-dd').format(bookedForDate) == formattedDate) {
+        // User has already booked the provider for this date
+        return false;
+      } 
+      // Check if the provider is already booked by someone else for the same date
+      else if (bookedUserId != userId && !isAvailable) {
+        return false;
       }
     }
-    return true;
+  }
+  return true;
   }
 
   @override
@@ -100,7 +98,7 @@ class _PlumberScreenState extends State<PlumberScreen> {
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
-                      'Plumber',
+                      'AC Repair',
                       style: TextStyle(
                           color: ColorConstants.textDarkGreen, fontSize: 28),
                     ),
@@ -113,7 +111,7 @@ class _PlumberScreenState extends State<PlumberScreen> {
                       horizontal: ValueConstants.containerMargin,
                       vertical: ValueConstants.containerMargin),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(30)),
+                    borderRadius:const BorderRadius.all(Radius.circular(30)),
                     child: Image.asset(
                       width: 50,
                       height: 200,
@@ -169,152 +167,107 @@ class _PlumberScreenState extends State<PlumberScreen> {
                                       elevation: 0.1,
                                     ),
                                     onPressed: () async {
-                                      // Add your booking logic here
-                                      DateTime today = DateTime.now();
-                                      DateTime? selectedDate =
-                                          await showDatePicker(
-                                        context: context,
-                                        initialDate: today,
-                                        firstDate: today,
-                                        lastDate:
-                                            today.add(const Duration(days: 5)),
-                                        builder: (BuildContext context,
-                                            Widget? child) {
-                                          return Theme(
-                                            data: ThemeData.light().copyWith(
-                                              // Customize the color of the date picker dialog
-                                              primaryColor: Colors
-                                                  .teal, // Header background color
-                                              hintColor: ColorConstants
-                                                  .deepGreenAccent, // Selected date color
-                                              colorScheme:
-                                                  const ColorScheme.light(
-                                                primary: Colors
-                                                    .teal, // Header background color
-                                                onPrimary: Colors
-                                                    .white, // Header text color
-                                                surface: Colors
-                                                    .white, // Background color of date cells
-                                                onSurface: Colors
-                                                    .black, // Default text color
-                                              ),
-                                              dialogBackgroundColor: Colors
-                                                  .white, // Background color of the date picker
-                                              textButtonTheme:
-                                                  TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  foregroundColor: ColorConstants
-                                                      .textDarkGreen, // Button text color
+                                       // Add your booking logic here
+                                       DateTime today = DateTime.now();
+                                        DateTime? selectedDate = await showDatePicker(
+                                          context: context,
+                                          initialDate: today,
+                                          firstDate: today,
+                                          lastDate: today.add(const Duration(days: 5)),
+                                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                                          builder: (BuildContext context, Widget? child) {
+                                            return Theme(
+                                              data: ThemeData.light().copyWith(
+                                                // Customize the color of the date picker dialog
+                                                primaryColor: Colors.teal,            // Header background color
+                                                hintColor: ColorConstants.deepGreenAccent,              // Selected date color
+                                                colorScheme: const ColorScheme.light(
+                                                  primary: Colors.teal,               // Header background color
+                                                  onPrimary: Colors.white,            // Header text color
+                                                  surface:Colors.white,         // Background color of date cells
+                                                  onSurface: Colors.black,            // Default text color
+                                                ),
+                                                dialogBackgroundColor: Colors.white,  // Background color of the date picker
+                                                textButtonTheme: TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor: ColorConstants.textDarkGreen,             // Button text color
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        },
-                                      );
-                                      if (selectedDate != null) {
-                                        // Step 2: Insert booking into Supabase
-                                        // Assuming you have access to providerId and userId
-                                        String providerId = service[
-                                            'id']; // Provider ID from the current service
-                                        String serviceId =
-                                            service['service_type_id'];
-                                        String providerNumber =
-                                            service['provider_number'] ?? '';
-                                        final user = Supabase
-                                            .instance
-                                            .client
-                                            .auth
-                                            .currentUser; // Replace with the actual user ID, e.g., from user session
-                                        String userId = user!.id;
-                                        bool isAvailable =
-                                            await _isProviderAvailable(
-                                                providerId,
-                                                selectedDate,
-                                                userId);
-                                        if (!isAvailable) {
-                                          // Show appropriate popup based on the availability
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    'Booking Unavailable'),
-                                                content: const Text(
-                                                    'Provider currently not available for selected date, choose another date'),
-                                                actions: <Widget>[
-                                                  Center(
-                                                    child: ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            ColorConstants
-                                                                .navBackground, // Set the button color
-                                                        foregroundColor:
-                                                            ColorConstants
-                                                                .textDarkGreen, // Set the text color
-                                                      ),
-                                                      child: const Text('OK'),
+                                              child: child!,
+                                            );
+                                          },
+                                        );
+                                        if (selectedDate != null) {
+                                      // Step 2: Insert booking into Supabase
+                                      // Assuming you have access to providerId and userId
+                                      String providerId = service['id'];  // Provider ID from the current service
+                                      String serviceId = service['service_type_id'];
+                                      final user = Supabase.instance.client.auth.currentUser; // Replace with the actual user ID, e.g., from user session
+                                      String userId = user!.id;
+                                      bool isAvailable = await _isProviderAvailable(providerId, selectedDate, userId);
+                                      if (!isAvailable) {
+                                        // Show appropriate popup based on the availability
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text('Booking Unavailable',textAlign: TextAlign.center,),
+                                              content: const Text('Provider currently not available\nchoose another dateor wait for some time.'),
+                                              actions: <Widget>[
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                    backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                    foregroundColor: ColorConstants.textDarkGreen, // Set the text color
                                                     ),
+                                                    child: const Text('OK'),
                                                   ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          await _bookServiceProvider(
-                                              providerId,
-                                              selectedDate,
-                                              serviceId,
-                                              providerNumber);
-
-                                          String formattedDate =
-                                              DateFormat('dd MMMM')
-                                                  .format(selectedDate);
-
-                                          // Step 3: Display the toast with the formatted date
-                                          // Fluttertoast.showToast(
-                                          //   msg: 'Booking successfully scheduled for $formattedDate!',
-                                          //   toastLength: Toast.LENGTH_SHORT,
-                                          //   gravity: ToastGravity.BOTTOM,
-                                          // );
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    'Booking Successful!'),
-                                                content: Text(
-                                                    'Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.'),
-                                                actions: <Widget>[
-                                                  Center(
-                                                    child: ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            ColorConstants
-                                                                .navBackground, // Set the button color
-                                                        foregroundColor:
-                                                            ColorConstants
-                                                                .textDarkGreen, // Set the text color
-                                                      ),
-                                                      child: const Text('OK'),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }
+                                      else {
+                                      await _bookServiceProvider(providerId, selectedDate, serviceId);
+                                      
+                                      String formattedDate = DateFormat('dd MMMM').format(selectedDate);
+
+                                      // Step 3: Display the toast with the formatted date
+                                      // Fluttertoast.showToast(
+                                      //   msg: 'Booking successfully scheduled for $formattedDate!',
+                                      //   toastLength: Toast.LENGTH_SHORT,
+                                      //   gravity: ToastGravity.BOTTOM,
+                                      // );
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text('Booking Successful!',textAlign: TextAlign.center,),
+                                              content: Text('Your booking is scheduled for $formattedDate.\nPayment is based on the service provided. We kindly accept cash only.',textAlign:TextAlign.center,),
+                                              actions: <Widget>[
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                    backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                    foregroundColor: ColorConstants.textDarkGreen, // Set the text color
+                                                    ),
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                    }
                                     },
                                     child: Text(
                                       'Book',
