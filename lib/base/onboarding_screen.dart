@@ -6,6 +6,8 @@ import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/base/intro_screens/intro_page1.dart';
 import 'package:homeassist/base/intro_screens/intro_page2.dart';
 import 'package:homeassist/base/intro_screens/intro_page3.dart';
+import 'package:homeassist/base/pages/signin_page.dart';
+import 'package:homeassist/base/pages/signup_page_edit.dart';
 import 'package:rive/rive.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -81,7 +83,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) {
-                                return MaterialNav();
+                                return SigninPage();
                               },
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {

@@ -18,7 +18,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _loadUserEmail();
   }
-  
+
   Future<void> _signOut() async {
     try {
       await Supabase.instance.client.auth.signOut();
@@ -72,13 +72,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             .from('profiles')
             .delete()
             .match({'id': user.id});
-       _signOut();
-
+        _signOut();
       }
     } catch (e) {
       print('Error deleting account: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete account. Please try again.')),
+        const SnackBar(
+            content: Text('Failed to delete account. Please try again.')),
       );
     }
   }
@@ -88,25 +88,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Account'),
-        content: const Text('Are you sure you want to delete your account permanently?'),
+        content: const Text(
+            'Are you sure you want to delete your account permanently?'),
         actions: [
           TextButton(
             style: TextButton.styleFrom(
               foregroundColor: Colors.black,
               textStyle: const TextStyle(
-              fontSize: 18, 
+                fontSize: 18,
               ),
-              ),
-            child: const Text('Discard'),
+            ),
+            child: const Text('No'),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              textStyle: const TextStyle(
-              fontSize: 18, 
+              foregroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              textStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onErrorContainer,
+                fontSize: 18,
               ),
-              ),
+            ),
             child: const Text('Delete'),
             onPressed: () {
               Navigator.pop(context);
@@ -122,66 +125,97 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(fontSize: 24),),
+        title: const Text(
+          'Account Settings',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Container(
-            margin: const EdgeInsets.symmetric(
-                                horizontal: ValueConstants.containerMargin),
-            child: Padding(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Padding(
                 padding: const EdgeInsets.only(top: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding:  EdgeInsets.only(left: 5),
+                      padding: EdgeInsets.only(left: 5),
                       child: Text(
-                        'Account settings',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        'Email',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),  // Padding inside the box
-                      decoration: BoxDecoration(
-                        border: Border.all(color: ColorConstants.navLabelHighlight),  // Border color
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
-                        ),  // Rounded corners
-                      ),
-                      child: Text('Email: ${userEmail ?? 'Not available'}',
-                       style: const TextStyle(fontSize: 18),)),
-                    // const SizedBox(height: 10),
+                    Column(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Card(
+                              elevation: 0,
+                              color: Theme.of(context).colorScheme.surface,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Text(
+                                  userEmail ?? 'Not available',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     GestureDetector(
                       onTap: _showDeleteConfirmation,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),  // Padding inside the box
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(color: ColorConstants.navLabelHighlight),  // Border color
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(8),
-                            bottomRight: Radius.circular(8),
-                          ),  // Rounded corners
-                        ),
-                        child: const Text(
-                          'Delete account',
-                          style: TextStyle(
-                            color: Colors.red,  // Set text color to red
-                            fontSize: 16,       // Font size
-                            fontWeight: FontWeight.w600,  // Font weight
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Card(
+                            elevation: 0,
+                            color: Theme.of(context).colorScheme.errorContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                'Delete account',
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onErrorContainer,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w200,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-          ),
+            ),
     );
   }
 }

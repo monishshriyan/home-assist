@@ -58,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await _fetchAvatarUrl(); // Load Avatar URL
   }
 
-
   String? _getCurrentUserId() {
     final user = Supabase.instance.client.auth.currentUser;
     return user?.id;
@@ -101,13 +100,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToScreen(int index) {
     switch (index) {
       case 0:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeCleaningScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HomeCleaningScreen()));
         break;
       case 1:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const TechSupport()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const TechSupport()));
         break;
       case 2:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const PetGrooming()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const PetGrooming()));
         break;
     }
   }
@@ -181,29 +185,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   navKey.currentState?.updateIndex(1);
                 },
                 child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: ValueConstants.containerMargin,
-                            vertical: 18.0),
-                          decoration: BoxDecoration(
-                            color: ColorConstants.navBackground,
-                           border: Border.all(
-                            color: ColorConstants.navLabelHighlight, width: 1),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          padding: const EdgeInsets.all(15),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: ValueConstants.containerMargin,
+                        vertical: 18.0),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.navBackground,
+                      border: Border.all(
+                          color: ColorConstants.navLabelHighlight, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding: const EdgeInsets.all(15),
                     child: Container(
                       padding: const EdgeInsets.only(left: 5),
-                      child: const Row(
+                      child: Row(
                           /* mainAxisAlignment: MainAxisAlignment.spaceBetween, */
                           children: [
-                             Icon(Icons.search,color: Colors.black,size: 25),
-                             SizedBox(
+                            const Icon(Icons.search,
+                                color: Colors.black, size: 25),
+                            const SizedBox(
                               width: 12,
                             ),
-                            Text(
-                              "Find Services",
-                              style: TextStyle(
-                                      color: Colors.black,fontSize: 18)),
+                            Text("Find Services",
+                                style: TextStyle(
+                                    color: ColorConstants.darkSlateGrey,
+                                    fontSize: 18)),
                           ]),
                     )),
               ),
@@ -232,19 +237,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: CarouselSlider(
                   items: carouselImages
                       .asMap()
-              .entries
-              .map((entry) => Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        _navigateToScreen(entry.key);
-                      },
-                      child: Image.asset(
-                        entry.value,
-                        width: 1000,
-                      ),
-                    ),
-                  ))
-              .toList(),
+                      .entries
+                      .map((entry) => Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                _navigateToScreen(entry.key);
+                              },
+                              child: Image.asset(
+                                entry.value,
+                                width: 1000,
+                              ),
+                            ),
+                          ))
+                      .toList(),
                   options: CarouselOptions(
                     viewportFraction: 0.8,
                     autoPlay: false,
@@ -322,7 +327,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BathroomCleaningAlt()),
+                              builder: (context) =>
+                                  const BathroomCleaningAlt()),
                         );
                       },
                       child: Container(
@@ -370,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹186",
+                                    Text("from ₹186",
                                         style: priceServiceCardTextStyle)
                                   ],
                                 )),
@@ -433,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹162",
+                                    Text("from ₹162",
                                         style: priceServiceCardTextStyle)
                                   ],
                                 )),
@@ -497,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹250",
+                                    Text("from ₹250",
                                         style: priceServiceCardTextStyle)
                                   ],
                                 )),
@@ -559,7 +565,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
-                                "images/bathroom-clean.webp",
+                                "images/electrician.jpg",
                                 fit: BoxFit.cover,
                               )),
                           Padding(
@@ -575,11 +581,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     SizedBox(height: 5),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Icon(
                                           Icons.star,
-                                          color: Color.fromARGB(155, 22, 22, 22),
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
                                           size: 20,
                                         ),
                                         SizedBox(width: 5),
@@ -594,7 +602,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹220", style: priceServiceCardTextStyle)
+                                    Text("from ₹220",
+                                        style: priceServiceCardTextStyle)
                                   ],
                                 )),
                           )
@@ -606,9 +615,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PlumberScreen()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PlumberScreen()));
                       },
                       child: Container(
                         width: 140,
@@ -618,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
-                                "images/ac-repair.webp",
+                                "images/plumber.jpg",
                                 fit: BoxFit.cover,
                               )),
                           Padding(
@@ -634,11 +643,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     SizedBox(height: 5),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Icon(
                                           Icons.star,
-                                          color: Color.fromARGB(155, 22, 22, 22),
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
                                           size: 20,
                                         ),
                                         SizedBox(width: 5),
@@ -653,7 +664,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹190", style: priceServiceCardTextStyle)
+                                    Text("from ₹190",
+                                        style: priceServiceCardTextStyle)
                                   ],
                                 )),
                           )
@@ -666,9 +678,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CarpenterScreen()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CarpenterScreen()));
                       },
                       child: Container(
                         width: 140,
@@ -678,7 +690,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
-                                "images/sofa-cleaning.webp",
+                                "images/carpentar.jpg",
                                 fit: BoxFit.cover,
                               )),
                           Padding(
@@ -694,11 +706,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     SizedBox(height: 5),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Icon(
                                           Icons.star,
-                                          color: Color.fromARGB(155, 22, 22, 22),
+                                          color:
+                                              Color.fromARGB(155, 22, 22, 22),
                                           size: 20,
                                         ),
                                         SizedBox(width: 5),
@@ -713,7 +727,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 5),
-                                    Text("₹200", style: priceServiceCardTextStyle)
+                                    Text("from ₹200",
+                                        style: priceServiceCardTextStyle)
                                   ],
                                 )),
                           )

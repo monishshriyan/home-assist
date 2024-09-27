@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeassist/base/bottom_nav_bar.dart';
 import 'package:homeassist/base/constants.dart';
-import 'package:homeassist/base/home_screen.dart';
 import 'package:homeassist/base/onboarding_screen.dart';
-import 'package:homeassist/base/pages/login_page.dart';
 import 'package:homeassist/base/pages/new_user_signup.dart';
 import 'package:homeassist/base/pages/signin_page.dart';
 import 'package:homeassist/base/pages/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 final GlobalKey<MaterialNavState> navKey = GlobalKey<MaterialNavState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +35,7 @@ class MyApp extends StatelessWidget {
             textTheme: GoogleFonts.interTightTextTheme()),
         initialRoute: '/',
         routes: {
+          '/onboarding': (context) => const OnboardingScreen(),
           '/': (context) => const SplashPage(),
           '/login': (context) => const SigninPage(),
           '/edit': (context) => const NewUserSignup(),

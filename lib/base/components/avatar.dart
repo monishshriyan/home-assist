@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homeassist/base/constants.dart';
 import 'package:homeassist/main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,15 +35,32 @@ class _AvatarState extends State<Avatar> {
             ),
           )
         else
-          Image.network(
-            widget.imageUrl!,
-            width: 150,
-            height: 150,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(75), // Rounded corners
+            child: Image.network(
+              widget.imageUrl!,
+              width: 150,
+              height: 150,
+              fit: BoxFit.cover,
+            ),
           ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: ColorConstants.navBackground,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 10), // Padding // Text style
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20), // Rounded corners
+            ),
+          ),
           onPressed: _isLoading ? null : _upload,
-          child: const Text('Upload'),
+          child: const Text(
+            'Upload',
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
         ),
       ],
     );
@@ -83,7 +101,7 @@ class _AvatarState extends State<Avatar> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Unexpected error occurred'),
               backgroundColor: Colors.red),
         );

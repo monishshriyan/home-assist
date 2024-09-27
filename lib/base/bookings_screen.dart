@@ -29,7 +29,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
 
     final response = await Supabase.instance.client
         .from('bookings')
-        .select('*, service_providers(provider_name, image_url), service_types(service_type)')
+        .select(
+            '*, service_providers(provider_name, image_url), service_types(service_type)')
         .eq('user_id', user.id)
         .eq('is_completed', false);
 
@@ -42,24 +43,22 @@ class _BookingsScreenState extends State<BookingsScreen> {
   }
 
   Future<void> cancelService(int bookingId) async {
-  try {
-    final response = await Supabase.instance.client
-        .from('bookings')
-        .delete()
-        .eq('booking_id', bookingId);
+    try {
+      final response = await Supabase.instance.client
+          .from('bookings')
+          .delete()
+          .eq('booking_id', bookingId);
 
-    if (response.error != null) {
-      throw Exception('Failed to cancel service: ${response.error!.message}');
-    }
+      if (response.error != null) {
+        throw Exception('Failed to cancel service: ${response.error!.message}');
+      }
 
-    
       // Uncomment this if you have a method to fetch bookings.
-   } 
-  catch (e) {
-  // Print the error to the console
-  print('Error: $e');
-}
-}
+    } catch (e) {
+      // Print the error to the console
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,32 +72,32 @@ class _BookingsScreenState extends State<BookingsScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.clear_all_rounded, 
-                      size: 150,             
-                      color: Colors.black54,    
-                    ),    
-                    Text(
-                      'No bookings Scheduled Currently!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,        
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,  
-                      ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.hourglass_empty,
+                    size: 80,
+                    color: Color.fromARGB(137, 62, 62, 62),
+                  ),
+                  Text(
+                    'No bookings yet',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromARGB(255, 107, 107, 107),
                     ),
-                  ],
-                ),
-              );
+                  ),
+                ],
+              ),
+            );
           } else {
             final bookings = snapshot.data!;
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  shape:const  RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(15),
                         bottomRight: Radius.circular(15)),
@@ -111,7 +110,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                     title: Text(
                       'My Bookings',
                       style: TextStyle(
-                          color: ColorConstants.textDarkGreen, fontSize: 28),
+                          color: ColorConstants.darkSlateGrey, fontSize: 28),
                     ),
                   ),
                   backgroundColor: ColorConstants.navBackground,
@@ -145,17 +144,20 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                   // Provider Name and Service Type
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          provider['provider_name'] ?? 'Unknown Provider',
+                                          provider['provider_name'] ??
+                                              'Unknown Provider',
                                           style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(
-                                          service['service_type'] ?? 'Unknown Service',
+                                          service['service_type'] ??
+                                              'Unknown Service',
                                           style: const TextStyle(
                                             fontSize: 16,
                                             color: Colors.black54,
@@ -164,25 +166,32 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                         const SizedBox(height: 4),
                                         GestureDetector(
                                           onTap: () async {
-                                            final phoneNumber = booking['provider_number'];
-                                            if (phoneNumber != null && phoneNumber.isNotEmpty) {
+                                            final phoneNumber =
+                                                booking['provider_number'];
+                                            if (phoneNumber != null &&
+                                                phoneNumber.isNotEmpty) {
                                               final Uri launchUri = Uri(
                                                 scheme: 'tel',
                                                 path: phoneNumber,
                                               );
-                                              if (await canLaunchUrl(launchUri)) {
+                                              if (await canLaunchUrl(
+                                                  launchUri)) {
                                                 await launchUrl(launchUri);
                                               } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
                                                   const SnackBar(
-                                                    content: Text('Cannot make a call at this moment'),
+                                                    content: Text(
+                                                        'Cannot make a call at this moment'),
                                                   ),
                                                 );
                                               }
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
                                                 const SnackBar(
-                                                  content: Text('Phone number not available'),
+                                                  content: Text(
+                                                      'Phone number not available'),
                                                 ),
                                               );
                                             }
@@ -224,63 +233,84 @@ class _BookingsScreenState extends State<BookingsScreen> {
 
                               // Cancel Service Button
                               SizedBox(
-                                width: double.infinity, // Make the button as wide as the card
+                                width: double
+                                    .infinity, // Make the button as wide as the card
                                 child: ElevatedButton(
                                   onPressed: () {
-                                   showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Cancel Service'),
-                                        content: const Text('Are you sure you want to cancel this service?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                                    //backgroundColor: ColorConstants.navBackground, // Set the button color
-                                                    foregroundColor: ColorConstants.deepGreenAccent,
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 18, // Adjust the font size
-                                                    ), // Set the text color
-                                                    ),
-                                            child: const Text('Discard'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(); // Close the dialog
-                                            },
-                                          ),
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                                    //backgroundColor: ColorConstants.navBackground, // Set the button color
-                                                    foregroundColor: ColorConstants.deepGreenAccent,
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 18, // Adjust the font size
-                                                    ), // Set the text color
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Cancel Service'),
+                                          content: const Text(
+                                              'Are you sure you want to cancel this service?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                //backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                foregroundColor: ColorConstants
+                                                    .deepGreenAccent,
+                                                textStyle: const TextStyle(
+                                                  fontSize:
+                                                      18, // Adjust the font size
+                                                ), // Set the text color
+                                              ),
+                                              child: const Text('Discard'),
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Close the dialog
+                                              },
                                             ),
-                                            child: const Text('Proceed'),
-                                            onPressed: () async {
-                                              // Proceed to cancel the service
-                                                await cancelService(booking['booking_id']); // Call the cancelService method
-                                                Navigator.of(context).pop(); // Close the confirmation dialog
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                //backgroundColor: ColorConstants.navBackground, // Set the button color
+                                                foregroundColor: ColorConstants
+                                                    .deepGreenAccent,
+                                                textStyle: const TextStyle(
+                                                  fontSize:
+                                                      18, // Adjust the font size
+                                                ), // Set the text color
+                                              ),
+                                              child: const Text('Proceed'),
+                                              onPressed: () async {
+                                                // Proceed to cancel the service
+                                                await cancelService(booking[
+                                                    'booking_id']); // Call the cancelService method
+                                                Navigator.of(context)
+                                                    .pop(); // Close the confirmation dialog
 
                                                 // Show cancellation success message
                                                 showDialog(
                                                   context: context,
-                                                  builder: (BuildContext context) {
+                                                  builder:
+                                                      (BuildContext context) {
                                                     return AlertDialog(
-                                                      title: const Text('Service Cancelled'),
-                                                      content: const Text('The service has been cancelled. Please refresh the page.'),
+                                                      title: const Text(
+                                                          'Service Cancelled'),
+                                                      content: const Text(
+                                                          'The service has been cancelled. Please refresh the page.'),
                                                       actions: <Widget>[
                                                         TextButton(
-                                                          style: TextButton.styleFrom(
-                                                            foregroundColor: ColorConstants.deepGreenAccent,
-                                                            textStyle: const TextStyle(
-                                                              fontSize: 18, // Adjust the font size
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            foregroundColor:
+                                                                ColorConstants
+                                                                    .deepGreenAccent,
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize:
+                                                                  18, // Adjust the font size
                                                             ), // Set the text color
                                                           ),
-                                                          child: const Text('OK'),
+                                                          child:
+                                                              const Text('OK'),
                                                           onPressed: () {
-                                                            Navigator.of(context).pop();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
                                                             setState(() {
-                                                              _bookingsFuture = _fetchBookings();
+                                                              _bookingsFuture =
+                                                                  _fetchBookings();
                                                             }); // Close the success dialog
                                                           },
                                                         ),
@@ -296,10 +326,11 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorConstants.darkSlateGrey,
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
-                                    elevation: 0
-                                  ),
+                                      backgroundColor:
+                                          ColorConstants.darkSlateGrey,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      elevation: 0),
                                   child: const Text(
                                     'Cancel Service',
                                     style: TextStyle(

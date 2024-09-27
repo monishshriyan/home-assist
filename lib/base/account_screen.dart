@@ -17,7 +17,6 @@ class _AccountScreenState extends State<AccountScreen> {
   String _username = '';
   String _avatarUrl = '';
   String _phoneNumber = '';
- 
 
   @override
   void initState() {
@@ -26,28 +25,29 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final user = Supabase.instance.client.auth.currentUser; // Fetch the current user
-  if (user != null) {
-    final userId = user.id;
-    try{
-      final response = await Supabase.instance.client
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single();
+    final user =
+        Supabase.instance.client.auth.currentUser; // Fetch the current user
+    if (user != null) {
+      final userId = user.id;
+      try {
+        final response = await Supabase.instance.client
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
 
-      if (response != null) {
-        setState(() {
-          _username = response['username'] ?? 'Unknown User';
-          _avatarUrl = response['avatar_url'] ?? '';
-          _phoneNumber = response['phone_number'] ?? 'No Phone Number Provided';
-        });
+        if (response != null) {
+          setState(() {
+            _username = response['username'] ?? 'Unknown User';
+            _avatarUrl = response['avatar_url'] ?? '';
+            _phoneNumber =
+                response['phone_number'] ?? 'No Phone Number Provided';
+          });
+        }
+      } catch (e) {
+        print('Error fetching user data: $e');
       }
     }
-    catch (e) {
-  print('Error fetching user data: $e');
-  }
-  }
   }
 
   Future<void> _signOut() async {
@@ -84,20 +84,25 @@ class _AccountScreenState extends State<AccountScreen> {
             style: TextButton.styleFrom(
               foregroundColor: ColorConstants.deepGreenAccent,
               textStyle: const TextStyle(
-              fontSize: 18, 
+                fontSize: 18,
               ),
-              ),
-            child: const Text('Discard'),
+            ),
+            child: const Text('No'),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: ColorConstants.deepGreenAccent,
+              foregroundColor: ColorConstants.textWhite,
+              backgroundColor: ColorConstants.darkSlateGrey,
               textStyle: const TextStyle(
-              fontSize: 18, 
+                fontSize: 18,
               ),
+            ),
+            child: Container(
+              child: const Text(
+                'Yes',
               ),
-            child: const Text('Logout'),
+            ),
             onPressed: () {
               Navigator.pop(context);
               _signOut();
@@ -107,7 +112,6 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
     );
   }
-
 
   static const double _sizedBoxWidth = 10;
   static const double _iconSize = 30;
@@ -136,11 +140,11 @@ class _AccountScreenState extends State<AccountScreen> {
                   size: 30,
                 ), // This will add an edit icon on the right side
                 onPressed: () {
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AccountPage()),
-                    );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AccountPage()),
+                  );
                 },
               ),
             ),
@@ -155,7 +159,7 @@ class _AccountScreenState extends State<AccountScreen> {
               children: [
                 const SizedBox(
                   //height: _sizedBoxHeight,
-                  height: 10,                
+                  height: 10,
                 ),
                 //Profile Info
                 Container(
@@ -196,7 +200,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                       fontWeight: FontWeight.w900),
                                 ),
                                 const SizedBox(height: 18),
-                                
                               ]),
                         ])),
 
@@ -213,17 +216,19 @@ class _AccountScreenState extends State<AccountScreen> {
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ManageAddress()),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ManageAddress()),
+                          );
                         },
                         child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: ValueConstants.containerMargin),
-                            padding: const EdgeInsets.only(top: 5), // Add padding to make the area bigger
-                              decoration: const BoxDecoration(
-                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            padding: const EdgeInsets.only(
+                                top: 5), // Add padding to make the area bigger
+                            decoration: const BoxDecoration(
+                              color: Colors
+                                  .transparent, // Set a transparent background to cover the entire area
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,8 +250,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.chevron_right,
-                                    size: 28),
+                                    Icon(Icons.chevron_right, size: 28),
                                   ],
                                 ),
                               ],
@@ -260,16 +264,17 @@ class _AccountScreenState extends State<AccountScreen> {
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BookingHistory()),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BookingHistory()),
+                          );
                         },
                         child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: ValueConstants.containerMargin),
-                              decoration: const BoxDecoration(
-                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                            decoration: const BoxDecoration(
+                              color: Colors
+                                  .transparent, // Set a transparent background to cover the entire area
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,8 +296,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.chevron_right,
-                                    size: 28),
+                                    Icon(Icons.chevron_right, size: 28),
                                   ],
                                 ),
                               ],
@@ -306,16 +310,17 @@ class _AccountScreenState extends State<AccountScreen> {
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SettingsScreen()),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsScreen()),
+                          );
                         },
                         child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: ValueConstants.containerMargin),
                             decoration: const BoxDecoration(
-                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                              color: Colors
+                                  .transparent, // Set a transparent background to cover the entire area
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -337,14 +342,16 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.chevron_right,
-                                    size: 28,),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 28,
+                                    ),
                                   ],
                                 ),
                               ],
                             )),
                       ),
-                          const SizedBox(
+                      const SizedBox(
                         height: _listGap,
                       ),
                       //fourth row
@@ -352,8 +359,9 @@ class _AccountScreenState extends State<AccountScreen> {
                           margin: const EdgeInsets.symmetric(
                               horizontal: ValueConstants.containerMargin),
                           decoration: const BoxDecoration(
-                              color: Colors.transparent, // Set a transparent background to cover the entire area
-                            ),
+                            color: Colors
+                                .transparent, // Set a transparent background to cover the entire area
+                          ),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -374,13 +382,15 @@ class _AccountScreenState extends State<AccountScreen> {
                               ),
                               Row(
                                 children: [
-                                  Icon(Icons.chevron_right,
-                                  size: 28,),
+                                  Icon(
+                                    Icons.chevron_right,
+                                    size: 28,
+                                  ),
                                 ],
                               ),
                             ],
                           )),
-                          const SizedBox(
+                      const SizedBox(
                         height: _listGap,
                       ),
                       //fifth row
@@ -392,7 +402,8 @@ class _AccountScreenState extends State<AccountScreen> {
                             margin: const EdgeInsets.symmetric(
                                 horizontal: ValueConstants.containerMargin),
                             decoration: const BoxDecoration(
-                              color: Colors.transparent, // Set a transparent background to cover the entire area
+                              color: Colors
+                                  .transparent, // Set a transparent background to cover the entire area
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -414,8 +425,10 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.chevron_right,
-                                    size: 28,),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 28,
+                                    ),
                                   ],
                                 ),
                               ],

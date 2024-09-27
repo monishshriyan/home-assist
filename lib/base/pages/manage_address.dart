@@ -33,7 +33,8 @@ class _ManageAddressState extends State<ManageAddress> {
       if (response != null) {
         setState(() {
           _currentAddress = response['address'] ?? '';
-          _addressController.text = _currentAddress; // Set the fetched address in the TextField
+          _addressController.text =
+              _currentAddress; // Set the fetched address in the TextField
         });
       }
     }
@@ -42,11 +43,10 @@ class _ManageAddressState extends State<ManageAddress> {
   Future<void> _updateAddress() async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId != null) {
-      await Supabase.instance.client
-          .from('profiles')
-          .update({'address': _addressController.text,
-          'updated_at': DateTime.now().toIso8601String()})
-          .eq('id', userId);
+      await Supabase.instance.client.from('profiles').update({
+        'address': _addressController.text,
+        'updated_at': DateTime.now().toIso8601String()
+      }).eq('id', userId);
       // Optionally, show a success message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Address updated successfully!'),
@@ -64,26 +64,26 @@ class _ManageAddressState extends State<ManageAddress> {
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
-              //backgroundColor: ColorConstants.navBackground, // Set the button color
-              foregroundColor: ColorConstants.deepGreenAccent,
-              textStyle: const TextStyle(
-              fontSize: 18, // Adjust the font size
-              ), // Set the text color
+                //backgroundColor: ColorConstants.navBackground, // Set the button color
+                foregroundColor: ColorConstants.deepGreenAccent,
+                textStyle: const TextStyle(
+                  fontSize: 18, // Adjust the font size
+                ), // Set the text color
               ),
-              child: const Text('Discard'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
               style: TextButton.styleFrom(
-              //backgroundColor: ColorConstants.navBackground, // Set the button color
-              foregroundColor: ColorConstants.deepGreenAccent,
-              textStyle: const TextStyle(
-              fontSize: 18, // Adjust the font size
-              ), // Set the text color
+                foregroundColor: ColorConstants.textWhite,
+                backgroundColor: ColorConstants.darkSlateGrey,
+                textStyle: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
-              child: const Text('Save Changes'),
+              child: const Text('Yes'),
               onPressed: () {
                 _updateAddress(); // Update the address in the database
                 Navigator.of(context).pop();
@@ -109,23 +109,29 @@ class _ManageAddressState extends State<ManageAddress> {
             TextField(
               controller: _addressController,
               decoration: InputDecoration(
-                hintText: _currentAddress.isNotEmpty ? _currentAddress : 'Current Address',
-                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: ColorConstants.darkSlateGrey,
+                      width: 1), // Change this to the desired focus color
+                ),
+                hintText: _currentAddress.isNotEmpty
+                    ? _currentAddress
+                    : 'Current Address',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstants.darkSlateGrey,
-                      elevation: 0
-                    ),
+                  backgroundColor: ColorConstants.darkSlateGrey, elevation: 0),
               onPressed: _showConfirmationDialog,
-              child: const Text('Save Changes',
+              child: const Text(
+                'Save Changes',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  ),
                 ),
+              ),
             ),
           ],
         ),

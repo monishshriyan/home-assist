@@ -25,6 +25,25 @@ class _NewUserSignupState extends State<NewUserSignup> {
       setState(() {
         _isLoading = true;
       });
+
+      // Check if the user already exists
+      bool userExists = await checkUserExists(_emailController.text.trim());
+      if (userExists) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('Email already exists. Please use a different email.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
       await supabase.auth.signInWithOtp(
         email: _emailController.text.trim(),
         emailRedirectTo:
@@ -59,6 +78,22 @@ class _NewUserSignupState extends State<NewUserSignup> {
         });
       }
     }
+  }
+
+  // Check if user doesn't exist
+  Future<bool> checkUserExists(String email) async {
+    final response = await supabase
+        .from('profiles')
+        .select()
+        .eq('email', email)
+        .maybeSingle();
+
+    if (response == null) {
+      // If no data is returned, the user does not exist
+      return false;
+    }
+
+    return true; // User exists if a response is received
   }
 
   @override
@@ -103,26 +138,42 @@ class _NewUserSignupState extends State<NewUserSignup> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sign Up')),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-        children: [
-          const Text('Sign Up with your email below', style: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),),
-          const SizedBox(height: 18),
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email',
-                  hintText: 'Enter your email',
-                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+            child: Column(children: [
+              const Text(
+                'Create your account',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 5, 21, 2)),
+              ),
+              const SizedBox(height: 18),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'Enter your email',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color.fromARGB(255, 5, 21, 2)))),
+              ),
+              const SizedBox(height: 18),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorConstants.darkSlateGrey),
+                onPressed: _isLoading ? null : _signIn,
+                child: Text(_isLoading ? 'Sending...' : 'Send Sign up Link',
+                    style: const TextStyle(color: Colors.white)),
+              ),
+            ]),
           ),
-          const SizedBox(height: 18),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
-            onPressed: _isLoading ? null : _signIn,
-            child: Text(_isLoading ? 'Sending...' : 'Send Sign up Link',style: const TextStyle(color: Colors.white)),
-          ),
-        ],
+        ),
       ),
     );
   }

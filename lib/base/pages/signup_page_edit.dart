@@ -21,7 +21,8 @@ class _SignupPageState extends State<SignupPage> {
   late final TextEditingController _fullNameController =
       TextEditingController();
   late final TextEditingController _addressController = TextEditingController();
-  late final TextEditingController _phoneNumberController = TextEditingController();
+  late final TextEditingController _phoneNumberController =
+      TextEditingController();
 
   String? _avatarUrl;
   var _loading = true;
@@ -75,31 +76,28 @@ class _SignupPageState extends State<SignupPage> {
           );
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-                builder: (context) =>
-                     MaterialNav()), // Navigate to HomePage
+                builder: (context) => MaterialNav()), // Navigate to HomePage
           );
         }
       }
     } on PostgrestException catch (error) {
-      if(error.code== '23514'){
+      if (error.code == '23514') {
         if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter correct details!'), // User-friendly message
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-    }
-    else {
-      if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message), backgroundColor: Colors.red),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Enter correct details!'), // User-friendly message
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message), backgroundColor: Colors.red),
+          );
+        }
       }
-    }
-  } 
-    catch (error) {
+    } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -129,7 +127,7 @@ class _SignupPageState extends State<SignupPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Updated your profile image and email!')),
+          const SnackBar(content: Text('Image updated!')),
         );
       }
     } on PostgrestException catch (error) {
@@ -187,7 +185,10 @@ class _SignupPageState extends State<SignupPage> {
               const Text(
                 'Create a new account',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 5, 21, 2)),
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 5, 21, 2)),
               ),
               const SizedBox(height: 12),
               Avatar(
@@ -203,7 +204,8 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'Enter your username',
                   labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -215,7 +217,8 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'Enter your full name',
                   labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -226,7 +229,8 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'Enter your address',
                   labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 12),
@@ -243,14 +247,19 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'Enter your phone number',
                   labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 5, 21, 2))),
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorConstants.darkSlateGrey),
                 onPressed: _isLoading ? null : _updateProfile,
-                child: Text(_isLoading ? 'Updating...' : 'Update Profile',style: const TextStyle(color: Colors.white,)),
+                child: Text(_isLoading ? 'Updating...' : 'Update Profile',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    )),
               ),
               const SizedBox(height: 12),
             ],

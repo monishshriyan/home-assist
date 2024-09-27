@@ -30,80 +30,82 @@ class MaterialNavState extends State<MaterialNav> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 0),
-          transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-            return FadeThroughTransition(
-              animation: primaryAnimation,
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            );
-          },
-          child: screens[index],
-        ),
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            indicatorColor: ColorConstants.navLabelHighlight,
-            labelTextStyle: WidgetStateProperty.all(
-              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+          body: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 0),
+            transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+              return FadeThroughTransition(
+                animation: primaryAnimation,
+                secondaryAnimation: secondaryAnimation,
+                child: child,
+              );
+            },
+            child: screens[index],
           ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
+          bottomNavigationBar: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              indicatorColor: ColorConstants.navLabelHighlight,
+              labelTextStyle: WidgetStateProperty.all(
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
             ),
-            child: NavigationBar(
-              selectedIndex: index,
-              height: 70,
-              labelBehavior:
-                  NavigationDestinationLabelBehavior.onlyShowSelected,
-              backgroundColor: ColorConstants.navBackground,
-              onDestinationSelected: (index) => setState(() {
-                this.index = index;
-              }),
-              destinations: const [
-                NavigationDestination(
-                    icon: Icon(
-                      Icons.explore_outlined,
-                      size: 30,
-                    ),
-                    selectedIcon: Icon(
-                      Icons.explore,
-                      size: 30,
-                    ),
-                    label: 'Discover'),
-                NavigationDestination(
-                    icon: Icon(
-                      Icons.search_outlined,
-                      size: 30,
-                    ),
-                    selectedIcon: Icon(
-                      Icons.search,
-                      size: 30,
-                    ),
-                    label: 'Search'),
-                NavigationDestination(
-                    icon: Icon(
-                      Icons.calendar_month_outlined,
-                      size: 30,
-                    ),
-                    selectedIcon: Icon(
-                      Icons.calendar_month,
-                      size: 30,
-                    ),
-                    label: 'Bookings'),
-                NavigationDestination(
-                    icon: Icon(Icons.account_circle, size: 30),
-                    selectedIcon: Icon(Icons.account_circle, size: 30),
-                    label: 'Profile'),
-              ],
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+              child: NavigationBar(
+                selectedIndex: index,
+                height: 70,
+                labelBehavior:
+                    NavigationDestinationLabelBehavior.onlyShowSelected,
+                backgroundColor: ColorConstants.navBackground,
+                onDestinationSelected: (index) => setState(() {
+                  this.index = index;
+                }),
+                destinations: const [
+                  NavigationDestination(
+                      icon: Icon(
+                        Icons.explore_outlined,
+                        size: 30,
+                      ),
+                      selectedIcon: Icon(
+                        Icons.explore,
+                        size: 30,
+                      ),
+                      label: 'Discover'),
+                  NavigationDestination(
+                      icon: Icon(
+                        Icons.search_outlined,
+                        size: 30,
+                      ),
+                      selectedIcon: Icon(
+                        Icons.search,
+                        size: 30,
+                      ),
+                      label: 'Search'),
+                  NavigationDestination(
+                      icon: Icon(
+                        Icons.calendar_month_outlined,
+                        size: 30,
+                      ),
+                      selectedIcon: Icon(
+                        Icons.calendar_month,
+                        size: 30,
+                      ),
+                      label: 'Bookings'),
+                  NavigationDestination(
+                      icon: Icon(Icons.account_circle, size: 30),
+                      selectedIcon: Icon(Icons.account_circle, size: 30),
+                      label: 'Profile'),
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class ColorConstants {
@@ -52,5 +51,4 @@ const TextStyle headerServiceProviderTextStyle = TextStyle(
 const TextStyle subheaderServiceProviderTextStyle = TextStyle(
     fontSize: 16,
     color: Color.fromARGB(255, 9, 9, 9),
-    fontWeight: FontWeight.w500
-);
+    fontWeight: FontWeight.w500);

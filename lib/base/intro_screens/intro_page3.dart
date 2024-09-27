@@ -20,10 +20,10 @@ class IntroPage3 extends StatelessWidget {
           ),
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: 50,
       ),
-      Column(
+      const Column(
         children: [
           Text(
             "Your Data is Safe",

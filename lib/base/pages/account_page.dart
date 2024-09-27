@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/components/avatar.dart';
 import 'package:homeassist/base/constants.dart';
-import 'package:homeassist/base/pages/login_page.dart';
 import 'package:homeassist/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,7 +32,7 @@ class _AccountPageState extends State<AccountPage> {
           await supabase.from('profiles').select().eq('id', userId).single();
       _usernameController.text = (data['username'] ?? '') as String;
       _fullNameController.text = (data['full_name'] ?? '') as String;
-      _phoneNumberController.text = (data['phone_number']?? '') as String;
+      _phoneNumberController.text = (data['phone_number'] ?? '') as String;
       _avatarUrl = (data['avatar_url'] ?? '') as String;
     } on PostgrestException catch (error) {
       if (mounted) {
@@ -63,6 +62,7 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       _loading = true;
     });
+
     final userName = _usernameController.text.trim();
     final fullName = _fullNameController.text.trim();
     final phoneNumber = _phoneNumberController.text.trim();
@@ -72,6 +72,7 @@ class _AccountPageState extends State<AccountPage> {
       'username': userName,
       'full_name': fullName,
       'phone_number': phoneNumber,
+      'email': user.email, // Add the email to the updates map
       'updated_at': DateTime.now().toIso8601String(),
     };
     try {
@@ -80,8 +81,6 @@ class _AccountPageState extends State<AccountPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully updated profile!')),
         );
-        // Navigator.of(context).pushReplacementNamed(
-        //     '/home'); // Navigate to home after profile update
       }
     } on PostgrestException catch (error) {
       if (mounted) {
@@ -106,18 +105,19 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
     try {
       final userId = supabase.auth.currentUser!.id;
+      final userEmail = supabase.auth.currentUser!.email;
       await supabase.from('profiles').upsert({
         'id': userId,
         'avatar_url': imageUrl,
+        'email': userEmail,
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Updated your profile image!')),
+          const SnackBar(content: Text('Image updated!')),
         );
       }
     } on PostgrestException catch (error) {
@@ -161,55 +161,95 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-        children: [
-          Avatar(
-            imageUrl: _avatarUrl,
-            onUpload: _onUpload,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(
+            color: Colors.white,
           ),
-          const SizedBox(height: 18),
-          TextFormField(
-            validator: ValidationBuilder().minLength(4).build(),
-            controller: _usernameController,
-            decoration: const InputDecoration(labelText: 'User Name',
-            labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))
+        ),
+        backgroundColor: ColorConstants.darkSlateGrey,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Avatar(
+              imageUrl: _avatarUrl,
+              onUpload: _onUpload,
             ),
-          ),
-          const SizedBox(height: 18),
-          TextFormField(
-            validator: ValidationBuilder().minLength(4).build(),
-            controller: _fullNameController,
-            decoration: const InputDecoration(labelText: 'Full Name',
-            labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))
+            const SizedBox(height: 32),
+            _buildTextFormField(
+              controller: _usernameController,
+              label: 'User Name',
+              validator: ValidationBuilder().minLength(4).build(),
             ),
-          ),
-          const SizedBox(height: 18),
-          TextFormField(
-            validator: ValidationBuilder()
-                    .phone()
-                    .minLength(10)
-                    .maxLength(10)
-                    .build(),
-            controller: _phoneNumberController,
-            decoration: const InputDecoration(labelText: 'Phone Number',
-                  labelStyle: TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 5, 21, 2)))),
-          ),
-          const SizedBox(height: 30),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: ColorConstants.darkSlateGrey),
-            onPressed: _loading ? null : _updateProfile,
-            child: Text(_loading ? 'Saving...' : 'Update',style: const TextStyle(color: Colors.white,fontSize: 18)),
-          ),
-          const SizedBox(height: 18),
-        ],
+            const SizedBox(height: 16),
+            _buildTextFormField(
+              controller: _fullNameController,
+              label: 'Full Name',
+              validator: ValidationBuilder().minLength(4).build(),
+            ),
+            const SizedBox(height: 16),
+            _buildTextFormField(
+              controller: _phoneNumberController,
+              label: 'Phone Number',
+              keyboardType: TextInputType.phone,
+              validator: ValidationBuilder().phone().minLength(10).build(),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: _loading ? null : _updateProfile,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: ColorConstants.darkSlateGrey,
+              ),
+              child: Text(
+                _loading ? 'Saving...' : 'Update',
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextFormField({
+    required TextEditingController controller,
+    required String label,
+    required String? Function(String?) validator,
+    TextInputType? keyboardType,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      validator: validator,
+      cursorColor: ColorConstants.darkSlateGrey,
+      decoration: InputDecoration(
+        hintStyle: TextStyle(
+          color: ColorConstants.textLightGrey,
+        ),
+        focusColor: ColorConstants.darkSlateGrey,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: ColorConstants.darkSlateGrey,
+              width: 1), // Change this to the desired focus color
+        ),
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }
