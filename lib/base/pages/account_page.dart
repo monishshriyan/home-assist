@@ -248,12 +248,13 @@ class _AccountPageState extends State<AccountPage> {
           color: ColorConstants.textLightGrey,
         ),
         focusColor: ColorConstants.darkSlateGrey,
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
-              color: ColorConstants.darkSlateGrey,
+              color: Color.fromARGB(255, 5, 21, 2),
               width: 1), // Change this to the desired focus color
         ),
         labelText: label,
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 5, 21, 2)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),

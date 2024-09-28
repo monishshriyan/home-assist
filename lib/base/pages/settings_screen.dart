@@ -57,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
       }
     } catch (e) {
-      print('Error loading user email: $e');
+      //print('Error loading user email: $e');
       setState(() {
         isLoading = false;
       });
@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _signOut();
       }
     } catch (e) {
-      print('Error deleting account: $e');
+      //print('Error deleting account: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Failed to delete account. Please try again.')),
@@ -161,7 +161,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  //color: Theme.of(context).colorScheme.primary,
+                                  color: ColorConstants.navLabelHighlight,
+                                  width: 3
                                 ),
                               ),
                               child: Padding(

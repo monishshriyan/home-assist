@@ -3,6 +3,7 @@ import 'package:homeassist/base/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class BookingHistory extends StatefulWidget {
   const BookingHistory({super.key});
@@ -33,6 +34,45 @@ class _BookingHistoryState extends State<BookingHistory> {
         .eq('is_completed', true);
 
     return response;
+  }
+
+  Future<void> _submitRating(int bookingId, int rating) async {
+  final response = await Supabase.instance.client
+      .from('bookings')
+      .update({'rating': rating})
+      .eq('booking_id', bookingId);
+
+    // Show custom popup thanking the user for rating
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Thank You!'),
+          content: const Text('Thanks for your feedback!\nWe appreciate your support.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+          ),),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                    // Call _fetchBookings to refresh the screen
+                    _bookingsFuture = _fetchBookings(); 
+                  }); // Close the dialog
+              },
+               style: TextButton.styleFrom(
+                  // backgroundColor: ColorConstants.navBackground, // Set the button color
+                  foregroundColor: ColorConstants.deepGreenAccent, // Set the text color
+                  ),
+              child: const Text('OK',style: TextStyle(fontSize: 18),),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
@@ -130,7 +170,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                                     backgroundImage: NetworkImage(
                                       provider['image_url'] ?? '',
                                     ),
-                                    radius: 30,
+                                    radius: 35,
                                   ),
                                   const SizedBox(width: 10),
 
@@ -212,6 +252,56 @@ class _BookingHistoryState extends State<BookingHistory> {
                                   color: Colors.black54,
                                 ),
                               ),
+                              const SizedBox(height: 5),
+                                booking['rating'] == null || booking['rating'] == 0
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Rate this service:',
+                                      style: TextStyle(fontSize: 16, color: Colors.black54)),
+                                      RatingBar.builder(
+                                        initialRating: 0,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: false,
+                                        itemCount: 5,
+                                        itemSize: 30,
+                                        itemBuilder: (context, _) => const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          // Convert the rating to int and submit
+                                          int integerRating = rating.toInt();
+                                          _submitRating(booking['booking_id'], integerRating);
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      const Text(
+                                        'You rated this service: ',
+                                        style:  TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        booking['rating'].toString(),  // Safely handle the rating display
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 2),
+                                      const Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
                             ],
                           ),
                         ),
