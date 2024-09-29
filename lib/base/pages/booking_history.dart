@@ -75,6 +75,43 @@ class _BookingHistoryState extends State<BookingHistory> {
     );
   }
 
+  void _showRatingDialog(int bookingId) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Rate this service', textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Center(
+              child: RatingBar.builder(
+                initialRating: 0,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemSize: 30, // Adjust the size of the stars
+                itemBuilder: (context, _) => const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+                onRatingUpdate: (rating) {
+                  int integerRating = rating.toInt();
+                  _submitRating(bookingId, integerRating);
+              
+                  // Close the dialog after rating is submitted
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -254,30 +291,45 @@ class _BookingHistoryState extends State<BookingHistory> {
                               ),
                               const SizedBox(height: 5),
                                 booking['rating'] == null || booking['rating'] == 0
-                                ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Rate this service:',
-                                      style: TextStyle(fontSize: 16, color: Colors.black54)),
-                                      RatingBar.builder(
-                                        initialRating: 0,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: false,
-                                        itemCount: 5,
-                                        itemSize: 30,
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                        onRatingUpdate: (rating) {
-                                          // Convert the rating to int and submit
-                                          int integerRating = rating.toInt();
-                                          _submitRating(booking['booking_id'], integerRating);
+                                ? 
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                      backgroundColor: ColorConstants.darkSlateGrey),
+                                        onPressed: () {
+                                          // Show the rating dialog
+                                          _showRatingDialog(booking['booking_id']);
                                         },
-                                      ),
-                                    ],
-                                  )
+                                        child: const Text('Rate Now',style:TextStyle(color: Colors.white),)
+                                        ),
+                                  ],
+                                )
+                                // Column(
+                                //     crossAxisAlignment: CrossAxisAlignment.start,
+                                //     children: [
+                                //       const Text('Rate this service:',
+                                //       style: TextStyle(fontSize: 16, color: Colors.black54)),
+                                //       RatingBar.builder(
+                                //         initialRating: 0,
+                                //         minRating: 1,
+                                //         direction: Axis.horizontal,
+                                //         allowHalfRating: false,
+                                //         itemCount: 5,
+                                //         itemSize: 30,
+                                //         itemBuilder: (context, _) => const Icon(
+                                //           Icons.star,
+                                //           color: Colors.amber,
+                                //         ),
+                                //         onRatingUpdate: (rating) {
+                                //           // Convert the rating to int and submit
+                                //           int integerRating = rating.toInt();
+                                //           _submitRating(booking['booking_id'], integerRating);
+                                //         },
+                                //       ),
+                                //     ],
+                                //   )
                                 : Row(
                                     children: [
                                       const Text(
