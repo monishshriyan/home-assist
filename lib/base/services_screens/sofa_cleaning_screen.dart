@@ -98,7 +98,7 @@ class _SofaCleaningScreenState extends State<SofaCleaningScreen> {
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
-                      'AC Repair',
+                      'Sofa Cleaning',
                       style: TextStyle(
                           color: ColorConstants.textDarkGreen, fontSize: 28),
                     ),
@@ -115,7 +115,7 @@ class _SofaCleaningScreenState extends State<SofaCleaningScreen> {
                     child: Image.asset(
                       width: 50,
                       height: 200,
-                      "images/sofa-cleaning,webp",
+                      "images/sofa-cleaning.webp",
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -213,7 +213,7 @@ class _SofaCleaningScreenState extends State<SofaCleaningScreen> {
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               title: const Text('Booking Unavailable',textAlign: TextAlign.center,),
-                                              content: const Text('Provider currently not available\nchoose another dateor wait for some time.'),
+                                              content: const Text('Provider currently not available\nchoose another date or wait for some time.'),
                                               actions: <Widget>[
                                                 Center(
                                                   child: ElevatedButton(

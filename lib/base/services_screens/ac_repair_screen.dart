@@ -213,7 +213,7 @@ class _AcRepairScreenState extends State<AcRepairScreen> {
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               title: const Text('Booking Unavailable',textAlign: TextAlign.center,),
-                                              content: const Text('Provider currently not available\nchoose another dateor wait for some time.'),
+                                              content: const Text('Provider currently not available\nchoose another date or wait for some time.'),
                                               actions: <Widget>[
                                                 Center(
                                                   child: ElevatedButton(
