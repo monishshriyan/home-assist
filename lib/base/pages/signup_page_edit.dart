@@ -68,8 +68,8 @@ class _SignupPageState extends State<SignupPage> {
           'phone_number': phoneNumber,
           'updated_at': DateTime.now().toIso8601String(),
         };
-
-        await supabase.from('profiles').upsert(updates);
+        try{
+          await supabase.from('profiles').upsert(updates);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Successfully updated profile!')),
@@ -79,25 +79,44 @@ class _SignupPageState extends State<SignupPage> {
                 builder: (context) => MaterialNav()), // Navigate to HomePage
           );
         }
-      }
-    } on PostgrestException catch (error) {
-      if (error.code == '23514') {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Enter correct details!'), // User-friendly message
-              backgroundColor: Colors.red,
-            ),
-          );
+        } on PostgrestException catch (error) {
+          if (mounted) {
+            String snackBarMessage = 'An error occurred';
+        
+        // Check error code or message for specific conditions
+        if (error.code == '23505') {  // Duplicate key constraint (PostgreSQL error code for unique violation)
+          snackBarMessage = 'Username Or Phone number already exists. Please enter a unique value.';
+        } else{
+          // Handle character length errors (usually found in the message)
+          snackBarMessage = 'Please enter value within the valid limit\n(username > 3) (full name >= 5 )\n(address > 6) (number = 10)';
+        } 
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(snackBarMessage)),
+        );
+          }
         }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.message), backgroundColor: Colors.red),
-          );
-        }
+        
       }
-    } catch (error) {
+    } 
+    // on PostgrestException catch (error) {
+    //   if (error.code == '23514') {
+    //     if (mounted) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         const SnackBar(
+    //           content: Text('Enter correct details!'), // User-friendly message
+    //           backgroundColor: Colors.red,
+    //         ),
+    //       );
+    //     }
+    //   } else {
+    //     if (mounted) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(content: Text(error.message), backgroundColor: Colors.red),
+    //       );
+    //     }
+    //   }
+     catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -197,7 +216,8 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                validator: ValidationBuilder().minLength(4).build(),
+                 maxLength:12,
+                validator: ValidationBuilder().minLength(4).maxLength(12).build(),
                 controller: _usernameController,
                 decoration: const InputDecoration(
                   labelText: 'Username',
@@ -210,7 +230,8 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                validator: ValidationBuilder().minLength(4).build(),
+                maxLength:25 ,
+                validator: ValidationBuilder().minLength(4).maxLength(16).build(),
                 controller: _fullNameController,
                 decoration: const InputDecoration(
                   labelText: 'Full Name',
@@ -223,6 +244,8 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                maxLength:50 ,
+                 validator: ValidationBuilder().minLength(7).build(),
                 controller: _addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address',
@@ -240,6 +263,7 @@ class _SignupPageState extends State<SignupPage> {
                     .minLength(10)
                     .maxLength(10)
                     .build(),
+                maxLength: 10,
                 controller: _phoneNumberController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(

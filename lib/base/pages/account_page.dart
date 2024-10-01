@@ -87,9 +87,20 @@ class _AccountPageState extends State<AccountPage> {
       }
     } on PostgrestException catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message), backgroundColor: Colors.red),
-        );
+        String snackBarMessage = 'An error occurred';
+    
+    // Check error code or message for specific conditions
+    if (error.code == '23505') {  // Duplicate key constraint (PostgreSQL error code for unique violation)
+      snackBarMessage = 'Username Or Phone number already exists. Please enter a unique value.';
+    } else{
+      // Handle character length errors (usually found in the message)
+      snackBarMessage = 'Please enter value within the valid limit\n(username > 3)\n(full name >= 5 )\n(number = 10)';
+     } 
+    
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(snackBarMessage)),
+    );
       }
     } catch (error) {
       if (mounted) {
@@ -189,18 +200,21 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 32),
                 _buildTextFormField(
+                  maxLength: 12,
                   controller: _usernameController,
                   label: 'User Name',
                   validator: ValidationBuilder().minLength(4).build(),
                 ),
                 const SizedBox(height: 16),
                 _buildTextFormField(
+                  maxLength: 25,
                   controller: _fullNameController,
                   label: 'Full Name',
                   validator: ValidationBuilder().minLength(4).build(),
                 ),
                 const SizedBox(height: 16),
                 _buildTextFormField(
+                  maxLength: 10,
                   controller: _phoneNumberController,
                   label: 'Phone Number',
                   keyboardType: TextInputType.phone,
@@ -236,9 +250,10 @@ class _AccountPageState extends State<AccountPage> {
     required TextEditingController controller,
     required String label,
     required String? Function(String?) validator,
-    TextInputType? keyboardType,
+    TextInputType? keyboardType, required int maxLength,
   }) {
     return TextFormField(
+      maxLength: maxLength,
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,

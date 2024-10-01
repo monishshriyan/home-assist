@@ -41,38 +41,6 @@ class _BookingHistoryState extends State<BookingHistory> {
       .from('bookings')
       .update({'rating': rating})
       .eq('booking_id', bookingId);
-
-    // Show custom popup thanking the user for rating
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Thank You!'),
-          content: const Text('Thanks for your feedback!\nWe appreciate your support.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-          ),),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                    // Call _fetchBookings to refresh the screen
-                    _bookingsFuture = _fetchBookings(); 
-                  }); // Close the dialog
-              },
-               style: TextButton.styleFrom(
-                  // backgroundColor: ColorConstants.navBackground, // Set the button color
-                  foregroundColor: ColorConstants.deepGreenAccent, // Set the text color
-                  ),
-              child: const Text('OK',style: TextStyle(fontSize: 18),),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showRatingDialog(int bookingId) {
@@ -84,7 +52,6 @@ class _BookingHistoryState extends State<BookingHistory> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 10),
             Center(
               child: RatingBar.builder(
                 initialRating: 0,
@@ -99,15 +66,81 @@ class _BookingHistoryState extends State<BookingHistory> {
                 ),
                 onRatingUpdate: (rating) {
                   int integerRating = rating.toInt();
-                  _submitRating(bookingId, integerRating);
-              
-                  // Close the dialog after rating is submitted
-                  Navigator.of(context).pop();
+                  _submitRating(bookingId, integerRating);    
                 },
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              maxLines: 3,
+              decoration: InputDecoration(
+                fillColor: ColorConstants.navLabelHighlight,
+                focusColor: ColorConstants.navLabelHighlight,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: ColorConstants.darkSlateGrey,
+                      width: 1), // Change this to the desired focus color
+                ),
+                hintText: 'Write a Review (optional)',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Call the thank you dialog
+              _showThankYouDialog();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: ColorConstants.deepGreenAccent, // Set the text color
+            ),
+            child: const Text(
+              'Submit',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showThankYouDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Thank You!'),
+        content: const Text(
+          'Thanks for your feedback!\nWe appreciate your support.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {
+                // Call _fetchBookings to refresh the screen
+                _bookingsFuture = _fetchBookings();
+              }); // Close the dialog
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: ColorConstants.deepGreenAccent, // Set the text color
+            ),
+            child: const Text(
+              'OK',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
       );
     },
   );

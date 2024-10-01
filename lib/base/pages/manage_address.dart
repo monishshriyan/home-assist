@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:homeassist/base/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:homeassist/main.dart';
@@ -43,14 +44,22 @@ class _ManageAddressState extends State<ManageAddress> {
   Future<void> _updateAddress() async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId != null) {
-      await Supabase.instance.client.from('profiles').update({
+      try{
+        await Supabase.instance.client.from('profiles').update({
         'address': _addressController.text,
         'updated_at': DateTime.now().toIso8601String()
       }).eq('id', userId);
       // Optionally, show a success message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Address updated successfully!'),
       ));
+      } catch(error){
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+        content: Text('Please enter proper address with minimum 6 characters!'),
+        ),
+       );
+      }
     }
   }
 
@@ -106,7 +115,9 @@ class _ManageAddressState extends State<ManageAddress> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
+            TextFormField(
+              maxLength: 50,
+              validator: ValidationBuilder().minLength(7).build(),
               controller: _addressController,
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
