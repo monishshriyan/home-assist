@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: ColorConstants.backgroundWhite,
+        backgroundColor: Colors.white,
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),

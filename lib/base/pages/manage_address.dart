@@ -108,7 +108,9 @@ class _ManageAddressState extends State<ManageAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text('Manage Addresses'),
       ),
       body: Padding(
@@ -116,7 +118,6 @@ class _ManageAddressState extends State<ManageAddress> {
         child: Column(
           children: [
             TextFormField(
-              maxLength: 50,
               validator: ValidationBuilder().minLength(7).build(),
               controller: _addressController,
               decoration: InputDecoration(

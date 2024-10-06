@@ -73,6 +73,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -125,6 +126,7 @@ class _BathroomCleaningAltState extends State<BathroomCleaningAlt> {
                     (context, index) {
                       final service = services[index];
                       return Card(
+                        color: ColorConstants.navBackground,
                         elevation: 0,
                         margin: const EdgeInsets.all(10),
                         child: Padding(

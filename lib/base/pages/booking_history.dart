@@ -48,6 +48,7 @@ class _BookingHistoryState extends State<BookingHistory> {
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: Colors.white,
         title: const Text('Rate this service', textAlign: TextAlign.center),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -149,6 +150,7 @@ void _showThankYouDialog() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _bookingsFuture,
         builder: (context, snapshot) {
@@ -161,6 +163,7 @@ void _showThankYouDialog() {
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
+                  backgroundColor: Colors.white,
                   shape:const  RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(15),
@@ -226,6 +229,7 @@ void _showThankYouDialog() {
                       final service = booking['service_types'];
 
                       return Card(
+                        color: ColorConstants.navBackground,
                         elevation: 0,
                         margin: const EdgeInsets.all(10),
                         child: Padding(

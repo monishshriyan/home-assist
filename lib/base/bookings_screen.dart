@@ -63,6 +63,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _bookingsFuture,
         builder: (context, snapshot) {
@@ -123,6 +124,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                       final service = booking['service_types'];
 
                       return Card(
+                        color: ColorConstants.navBackground,
                         elevation: 0,
                         margin: const EdgeInsets.all(10),
                         child: Padding(

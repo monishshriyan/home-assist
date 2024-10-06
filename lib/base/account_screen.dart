@@ -117,7 +117,9 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false, // This will remove the back button
           title: Container(
             margin: const EdgeInsets.symmetric(horizontal: 2),
@@ -146,7 +148,7 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ],
         ),
-        backgroundColor: ColorConstants.backgroundWhite,
+        //backgroundColor: ColorConstants.backgroundWhite,
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),

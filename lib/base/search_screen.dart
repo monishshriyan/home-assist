@@ -145,7 +145,8 @@ class SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: ColorConstants.backgroundWhite,
+        backgroundColor: Colors.white,
+        //backgroundColor: ColorConstants.backgroundWhite,
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -218,6 +219,7 @@ class SearchScreenState extends State<SearchScreen> {
                         (context, index) {
                           final service = filteredServices[index];
                           return Card(
+                            color: ColorConstants.navBackground,
                             elevation: 0,
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -393,6 +395,7 @@ class SearchScreenState extends State<SearchScreen> {
                                                 builder:
                                                     (BuildContext context) {
                                                   return AlertDialog(
+                                                    backgroundColor: Colors.white,
                                                     title: const Text(
                                                         'Booking Successful!',textAlign: TextAlign.center,),
                                                     content: Text(
