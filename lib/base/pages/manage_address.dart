@@ -46,17 +46,20 @@ class _ManageAddressState extends State<ManageAddress> {
     if (userId != null) {
       try{
         await Supabase.instance.client.from('profiles').update({
-        'address': _addressController.text,
+        'address': _addressController.text.trim(),
         'updated_at': DateTime.now().toIso8601String()
       }).eq('id', userId);
       // Optionally, show a success message
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Address updated successfully!'),
-      ));
+     if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Address Updated Sucessfully!')),
+        );
+        Navigator.pop(context, true);
+      }
       } catch(error){
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-        content: Text('Please enter proper address with minimum 6 characters!'),
+        content: Text('Please enter proper address with minimum 10 characters!'),
         ),
        );
       }
@@ -118,7 +121,7 @@ class _ManageAddressState extends State<ManageAddress> {
         child: Column(
           children: [
             TextFormField(
-              validator: ValidationBuilder().minLength(7).build(),
+              validator: ValidationBuilder().minLength(10).build(),
               controller: _addressController,
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(

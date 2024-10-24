@@ -84,6 +84,7 @@ class _AccountPageState extends State<AccountPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully updated profile!')),
         );
+        Navigator.pop(context, true);
       }
     } on PostgrestException catch (error) {
       if (mounted) {
@@ -94,7 +95,7 @@ class _AccountPageState extends State<AccountPage> {
       snackBarMessage = 'Username Or Phone number already exists. Please enter a unique value.';
     } else{
       // Handle character length errors (usually found in the message)
-      snackBarMessage = 'Please enter value within the valid limit\n(username > 3)\n(full name >= 5 )\n(number = 10)';
+      snackBarMessage = 'Please enter value within the valid limit\n\nUsername must be minimum 4 characters long!\nFull name must be minimum 5 characters long!\nPhone number must be 10 digit long only!';
      } 
     
 

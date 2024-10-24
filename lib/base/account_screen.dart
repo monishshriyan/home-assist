@@ -25,6 +25,9 @@ class _AccountScreenState extends State<AccountScreen> {
     _loadUserData();
   }
 
+void _reloadScreen1() {
+  _loadUserData();
+}
   Future<void> _loadUserData() async {
     final user = Supabase.instance.client.auth.currentUser; // Fetch the current user
   if (user != null) {
@@ -137,12 +140,17 @@ class _AccountScreenState extends State<AccountScreen> {
                   Icons.mode_edit_outlined,
                   size: 30,
                 ), // This will add an edit icon on the right side
-                onPressed: () {
-                    Navigator.push(
+                onPressed: () async {
+                   final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AccountPage()),
                     );
+                    if (result == true) {
+                      setState(() {
+                        _reloadScreen1(); 
+                      });
+                    }
                 },
               ),
             ),

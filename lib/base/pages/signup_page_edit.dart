@@ -88,7 +88,7 @@ class _SignupPageState extends State<SignupPage> {
           snackBarMessage = 'Username Or Phone number already exists. Please enter a unique value.';
         } else{
           // Handle character length errors (usually found in the message)
-          snackBarMessage = 'Please enter value within the valid limit\n(username > 3) (full name >= 5 )\n(address > 6) (number = 10)';
+          snackBarMessage = 'Please enter value within the valid limit\nUsername must be minimum 4 characters long!\nFull name must be minimum 5 characters long!\nAddress must be minimum 10 characters long!\nPhone number must be 10 digits only!';
         } 
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -246,8 +246,8 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                maxLength:50 ,
-                 validator: ValidationBuilder().minLength(7).build(),
+                maxLength:200 ,
+                 validator: ValidationBuilder().minLength(10).build(),
                 controller: _addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address',
